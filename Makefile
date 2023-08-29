@@ -9,7 +9,7 @@
 CL = $(CC65_DIR)bin/cl65
 DA = $(CC65_DIR)bin/da65
 
-CC = $(LLVM_MOS_DIR)bin/mos-nes-cnrom-clang.bat
+CC = $(LLVM_MOS_DIR)bin/mos-nes-cnrom-clang
 OD = $(LLVM_MOS_DIR)bin/llvm-objdump
 
 ###############################################################################
