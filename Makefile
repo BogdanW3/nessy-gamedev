@@ -9,7 +9,7 @@
 CL = $(CC65_DIR)bin/cl65
 DA = $(CC65_DIR)bin/da65
 
-CC = $(LLVM_MOS_DIR)bin/mos-nes-clang.bat
+CC = $(LLVM_MOS_DIR)bin/mos-nes-cnrom-clang.bat
 
 ###############################################################################
 ### In order to override defaults - values can be assigned to the variables ###
@@ -43,7 +43,7 @@ ASFLAGS =
 
 # Additional linker flags and options.
 # Default: none
-LDFLAGS = -L E:\llvm-mos\mos-platform\nes-cnrom\lib -I$(LLVM_MOS_DIR)mos-platform\nes\lib
+LDFLAGS = -L $(LLVM_MOS_DIR)mos-platform\nes-cnrom\lib -I$(LLVM_MOS_DIR)mos-platform\nes\lib
 LDFLAGS += -T link.ld -Wl,--defsym,__prg_rom_size=32,--defsym,__chr_rom_size=16,--defsym,__mapper=0
 
 # Path to the directory containing C and ASM sources.
@@ -203,10 +203,12 @@ ifeq ($(shell echo),)
   MKDIR = mkdir -p $1
   RMDIR = rmdir $1
   RMFILES = $(RM) $1
+  EXT = 
 else
   MKDIR = mkdir $(subst /,\,$1)
   RMDIR = rmdir $(subst /,\,$1)
   RMFILES = $(if $1,del /f $(subst /,\,$1))
+  EXT = .bat
 endif
 COMMA := ,
 SPACE := $(N/A) $(N/A)
@@ -215,6 +217,8 @@ define NEWLINE
 
 endef
 # Note: Do not remove any of the two empty lines above !
+
+CC := $(CC)$(EXT)
 
 TARGETLIST := $(subst $(COMMA),$(SPACE),$(TARGETS))
 
