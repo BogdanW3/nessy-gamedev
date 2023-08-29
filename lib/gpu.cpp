@@ -20,8 +20,7 @@
 
 void draw_pixel(char *where, int x, int y, Colour *colour)
 {
-    while (!(*GPU_STATUS & (1 << (where - GPU_STATUS))))
-        ;
+    while (!(*GPU_STATUS & (1 << (where - GPU_STATUS))));
     *where = colour->r;
     *where = colour->g;
     *where = colour->b;
