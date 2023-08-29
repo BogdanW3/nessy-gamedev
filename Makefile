@@ -36,7 +36,7 @@ CONFIG  :=
 
 # Additional C compiler flags and options.
 # Default: none
-CFLAGS  = -O0
+CFLAGS  = -O0 -g
 
 # Additional assembler flags and options.
 # Default: none
@@ -323,6 +323,9 @@ $(PROGRAM): $(CONFIG) $(OBJECTS) $(LIBS)
 	${CC} ${LDFLAGS} -o ${@} ${OBJECTS} ${LIBS} 
 #	$(DA) -v --cpu 6502 -o $(@:.nes=.asm) $@
 	$(OD) -w --source $(PROGRAM).elf > $(@:.nes=.asm)
+
+dump: $(PROGRAM)
+	$(OD) -w --source $(PROGRAM).elf --full-contents > $(PROGRAM).full.asm
 
 test: $(PROGRAM)
 	$(PREEMUCMD)

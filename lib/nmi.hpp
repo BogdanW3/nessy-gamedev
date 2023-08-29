@@ -1,6 +1,6 @@
 #ifndef NMI_H
 #define NMI_H
 
-void nmi_handler();
+extern "C" void __attribute__((interrupt)) nmi();
 
 #endif
