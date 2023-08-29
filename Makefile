@@ -10,6 +10,7 @@ CL = $(CC65_DIR)bin/cl65
 DA = $(CC65_DIR)bin/da65
 
 CC = $(LLVM_MOS_DIR)bin/mos-nes-cnrom-clang.bat
+OD = $(LLVM_MOS_DIR)bin/llvm-objdump
 
 ###############################################################################
 ### In order to override defaults - values can be assigned to the variables ###
@@ -302,17 +303,26 @@ $(TARGETOBJDIR)/%.o: %.c | $(TARGETOBJDIR)
 #   $(CL) -t $(CC65TARGET) -c --create-dep $(@:.o=.d) $(CFLAGS) -o $@ $<
 	$(CC) -c $(CFLAGS) -o $@ $<
 
+  
+vpath %.cpp $(SRCDIR)/$(TARGETLIST) $(SRCDIR)
+
+$(TARGETOBJDIR)/%.o: %.cpp | $(TARGETOBJDIR)
+	mkdir -p $(dir $@)
+#   $(CL) -t $(CC65TARGET) -c --create-dep $(@:.o=.d) $(CFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) -o $@ $<
+
 vpath %.S $(SRCDIR)/$(TARGETLIST) $(SRCDIR)
 
 $(TARGETOBJDIR)/%.o: %.S | $(TARGETOBJDIR)
 	mkdir -p $(dir $@)
-#	$(CL) -t $(CC65TARGET) -c --create-dep $(@:.o=.d) $(ASFLAGS) -o $@ $<
+  #	$(CL) -t $(CC65TARGET) -c --create-dep $(@:.o=.d) $(ASFLAGS) -o $@ $<
 	$(CC) -c $(ASFLAGS) -o $@ $<
 
 $(PROGRAM): $(CONFIG) $(OBJECTS) $(LIBS)
-#	$(CL) -t $(CC65TARGET) $(LDFLAGS) -o $@ $(patsubst %.cfg,-C %.cfg,$^)
+# $(CL) -t $(CC65TARGET) $(LDFLAGS) -o $@ $(patsubst %.cfg,-C %.cfg,$^)
 	${CC} ${LDFLAGS} -o ${@} ${OBJECTS} ${LIBS} 
-	$(DA) -v --cpu 6502 -o $(@:.nes=.asm) $@
+#	$(DA) -v --cpu 6502 -o $(@:.nes=.asm) $@
+	$(OD) -w --source $(PROGRAM).elf > $(@:.nes=.asm)
 
 test: $(PROGRAM)
 	$(PREEMUCMD)
