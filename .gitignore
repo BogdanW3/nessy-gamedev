@@ -4,3 +4,4 @@
 .gdbinit
 kernel
 kernel.asm
+/obj

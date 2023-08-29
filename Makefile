@@ -9,6 +9,8 @@
 CL = $(CC65_DIR)bin/cl65
 DA = $(CC65_DIR)bin/da65
 
+CC = $(LLVM_MOS_DIR)bin/mos-nes-clang.bat
+
 ###############################################################################
 ### In order to override defaults - values can be assigned to the variables ###
 ###############################################################################
@@ -29,11 +31,11 @@ LIBS    :=
 # Custom linker configuration file
 # Use only if you don't want to place it in SRCDIR
 # Default: none
-CONFIG  :=
+CONFIG  := 
 
 # Additional C compiler flags and options.
 # Default: none
-CFLAGS  = -I$(CC65_DIR)include  --debug-info --add-source --register-vars
+CFLAGS  = -O0
 
 # Additional assembler flags and options.
 # Default: none
@@ -41,7 +43,8 @@ ASFLAGS =
 
 # Additional linker flags and options.
 # Default: none
-LDFLAGS =
+LDFLAGS = -L E:\llvm-mos\mos-platform\nes-cnrom\lib -I$(LLVM_MOS_DIR)mos-platform\nes\lib
+LDFLAGS += -T link.ld -Wl,--defsym,__prg_rom_size=32,--defsym,__chr_rom_size=16,--defsym,__mapper=0
 
 # Path to the directory containing C and ASM sources.
 # Default: src
@@ -292,16 +295,19 @@ vpath %.c $(SRCDIR)/$(TARGETLIST) $(SRCDIR)
 
 $(TARGETOBJDIR)/%.o: %.c | $(TARGETOBJDIR)
 	mkdir -p $(dir $@)
-	$(CL) -t $(CC65TARGET) -c --create-dep $(@:.o=.d) $(CFLAGS) -o $@ $<
+#   $(CL) -t $(CC65TARGET) -c --create-dep $(@:.o=.d) $(CFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 vpath %.S $(SRCDIR)/$(TARGETLIST) $(SRCDIR)
 
 $(TARGETOBJDIR)/%.o: %.S | $(TARGETOBJDIR)
 	mkdir -p $(dir $@)
-	$(CL) -t $(CC65TARGET) -c --create-dep $(@:.o=.d) $(ASFLAGS) -o $@ $<
+#	$(CL) -t $(CC65TARGET) -c --create-dep $(@:.o=.d) $(ASFLAGS) -o $@ $<
+	$(CC) -c $(ASFLAGS) -o $@ $<
 
 $(PROGRAM): $(CONFIG) $(OBJECTS) $(LIBS)
-	$(CL) -t $(CC65TARGET) $(LDFLAGS) -o $@ $(patsubst %.cfg,-C %.cfg,$^)
+#	$(CL) -t $(CC65TARGET) $(LDFLAGS) -o $@ $(patsubst %.cfg,-C %.cfg,$^)
+	${CC} ${LDFLAGS} -o ${@} ${OBJECTS} ${LIBS} 
 	$(DA) -v --cpu 6502 -o $(@:.nes=.asm) $@
 
 test: $(PROGRAM)
