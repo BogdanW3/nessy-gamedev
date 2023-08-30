@@ -1,21 +1,38 @@
 #include "../h/arena.hpp"
-#include "../h/tile.hpp"
 
-Arena::Arena(const uint8_t width, const uint8_t height):
-	width(width), height(height)
+#include "../h/tile.hpp"
+#include "../lib/kb.hpp"
+
+void Arena::start(const uint8_t width, const uint8_t height, const uint8_t player_count)
 {
-	tile_map = new uint8_t*[width];
-	for(uint8_t i = 0; i < width; i++)
+	const_cast<uint8_t&>(this->width) = width;
+	const_cast<uint8_t&>(this->height) = height;
+	const_cast<uint8_t&>(this->player_count) = player_count;
+	for (uint8_t i = 0; i < player_count; i++)
 	{
-		tile_map[i] = new uint8_t[height];
+		players[i] = Player();
 	}
+	this->dirty = true;
 	initTileMap();
+	initPlayers();
 }
 
 void Arena::initTileMap()
 {
-	uint8_t TILE_WALL = TILE_WALL_MASK;
 
+	initTileMapWalls();
+
+	for(uint8_t i = 1; i < width-1; i++)
+	{
+		for(uint8_t j = 1; j < height-1; j++)
+		{
+			tile_map[i][j] = 0;
+		}
+	}
+}
+void Arena::initTileMapWalls()
+{
+	uint8_t TILE_WALL = TILE_WALL_MASK;
 
 	for(uint8_t i = 0; i < width; i++)
 	{
@@ -27,6 +44,17 @@ void Arena::initTileMap()
 	{
 		tile_map[0][i] = TILE_WALL;
 		tile_map[width-1][i] = TILE_WALL;
+	}
+}
+
+void Arena::initPlayers()
+{
+	for(uint8_t i = 0; i < player_count; i++)
+	{
+		Player& p = players[i];
+		p.position.x = width/10 + (p.id & 0x1) * (width - width/5);
+		p.position.y = height/10 + (!(p.id & 0x2)) * (height - height/5);
+		tile_map[p.position.x][p.position.y] = TILE_TAKEN_MASK | p.id;
 	}
 }
 
@@ -50,13 +78,13 @@ bool inline Arena::isPaintable(uint8_t x, uint8_t y) const
 
 void Arena::paint(uint8_t player_id, uint8_t x, uint8_t y)
 {
-	if(player_id >= PLAYER_COUNT) return;
+	if(player_id >= player_count) return;
 	if(!isPaintable(x,y)) return;
 	uint8_t tile = tile_map[x][y];
 
 	//Decrease score of last owner (if they exists)
 	if(tile & TILE_TAKEN_MASK) {
-		player[tile & TILE_OWNER_MASK].decreaseScore();
+		players[tile & TILE_OWNER_MASK].decreaseScore();
 	}
 
 	//Set taken bit;
@@ -67,5 +95,56 @@ void Arena::paint(uint8_t player_id, uint8_t x, uint8_t y)
 	tile |= player_id & TILE_OWNER_MASK;
 
 	//Increase score of new owner
-	player[player_id].increaseScore();
+	players[player_id].increaseScore();
 }
+
+void Arena::tick()
+{
+	for(uint8_t i = 0; i < player_count; i++)
+	{
+		Player& p = players[i];
+		KB::PlayerKBData* data = KB::PLAYER_KB_DATA[i];
+		if(data->A) {
+			paint(p.id, p.position.x, p.position.y);
+			dirty = true;
+		}
+		if(data->UP) {
+			if(isPaintable(p.position.x, p.position.y-1)) {
+				p.position.y--;
+				dirty = true;
+			}
+		}
+		if(data->DOWN) {
+			if(isPaintable(p.position.x, p.position.y+1)) {
+				p.position.y++;
+				dirty = true;
+			}
+		}
+		if(data->LEFT) {
+			if(isPaintable(p.position.x-1, p.position.y)) {
+				p.position.x--;
+				dirty = true;
+			}
+		}
+		if(data->RIGHT) {
+			if(isPaintable(p.position.x+1, p.position.y)) {
+				p.position.x++;
+				dirty = true;
+			}
+		}
+
+	}
+
+}
+
+/*
+Arena::~Arena()
+{
+	for(uint8_t i = 0; i < width; i++)
+	{
+		delete[] tile_map[i];
+	}
+	delete[] tile_map;
+
+	delete[] players;
+}*/

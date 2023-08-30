@@ -7,75 +7,81 @@
 // The data is read sequentially, and the order is
 // A, B, Select, Start, Up, Down, Left, Right
 
-void kb_handle_nmi()
+void KB::tick()
 {
+	#ifdef NONES_SIM
+	//TODO: implement
+	// the player kb data structs should get the current presssed states of buttons
+	// {ALSO PUT KEYBINDS HERE IN A COMMENT}
+	#else
 	*KB_CONTROL = 1;
 	*KB_CONTROL = 0;
 
 	char data = 0;
 
 	data = *KB_DATA1;
-	PLAYER1_KB_DATA->A = data & 0x01;
-	PLAYER2_KB_DATA->A = data & 0x02;
+	PLAYER_KB_DATA[0]->A = data & 0x01;
+	PLAYER_KB_DATA[1]->A = data & 0x02;
 
 	data = *KB_DATA1;
-	PLAYER1_KB_DATA->B = data & 0x01;
-	PLAYER2_KB_DATA->B = data & 0x02;
+	PLAYER_KB_DATA[0]->B = data & 0x01;
+	PLAYER_KB_DATA[1]->B = data & 0x02;
 
 	data = *KB_DATA1;
-	PLAYER1_KB_DATA->SELECT = data & 0x01;
-	PLAYER2_KB_DATA->SELECT = data & 0x02;
+	PLAYER_KB_DATA[0]->SELECT = data & 0x01;
+	PLAYER_KB_DATA[1]->SELECT = data & 0x02;
 
 	data = *KB_DATA1;
-	PLAYER1_KB_DATA->START = data & 0x01;
-	PLAYER2_KB_DATA->START = data & 0x02;
+	PLAYER_KB_DATA[0]->START = data & 0x01;
+	PLAYER_KB_DATA[1]->START = data & 0x02;
 
 	data = *KB_DATA1;
-	PLAYER1_KB_DATA->UP = data & 0x01;
-	PLAYER2_KB_DATA->UP = data & 0x02;
+	PLAYER_KB_DATA[0]->UP = data & 0x01;
+	PLAYER_KB_DATA[1]->UP = data & 0x02;
 
 	data = *KB_DATA1;
-	PLAYER1_KB_DATA->DOWN = data & 0x01;
-	PLAYER2_KB_DATA->DOWN = data & 0x02;
+	PLAYER_KB_DATA[0]->DOWN = data & 0x01;
+	PLAYER_KB_DATA[1]->DOWN = data & 0x02;
 
 	data = *KB_DATA1;
-	PLAYER1_KB_DATA->LEFT = data & 0x01;
-	PLAYER2_KB_DATA->LEFT = data & 0x02;
+	PLAYER_KB_DATA[0]->LEFT = data & 0x01;
+	PLAYER_KB_DATA[1]->LEFT = data & 0x02;
 
 	data = *KB_DATA1;
-	PLAYER1_KB_DATA->RIGHT = data & 0x01;
-	PLAYER2_KB_DATA->RIGHT = data & 0x02;
+	PLAYER_KB_DATA[0]->RIGHT = data & 0x01;
+	PLAYER_KB_DATA[1]->RIGHT = data & 0x02;
 
 
 	data = *KB_DATA2;
-	PLAYER3_KB_DATA->A = data & 0x01;
-	PLAYER4_KB_DATA->A = data & 0x02;
+	PLAYER_KB_DATA[2]->A = data & 0x01;
+	PLAYER_KB_DATA[3]->A = data & 0x02;
 
 	data = *KB_DATA2;
-	PLAYER3_KB_DATA->B = data & 0x01;
-	PLAYER4_KB_DATA->B = data & 0x02;
+	PLAYER_KB_DATA[2]->B = data & 0x01;
+	PLAYER_KB_DATA[3]->B = data & 0x02;
 
 	data = *KB_DATA2;
-	PLAYER3_KB_DATA->SELECT = data & 0x01;
-	PLAYER4_KB_DATA->SELECT = data & 0x02;
+	PLAYER_KB_DATA[2]->SELECT = data & 0x01;
+	PLAYER_KB_DATA[3]->SELECT = data & 0x02;
 
 	data = *KB_DATA2;
-	PLAYER3_KB_DATA->START = data & 0x01;
-	PLAYER4_KB_DATA->START = data & 0x02;
+	PLAYER_KB_DATA[2]->START = data & 0x01;
+	PLAYER_KB_DATA[3]->START = data & 0x02;
 
 	data = *KB_DATA2;
-	PLAYER3_KB_DATA->UP = data & 0x01;
-	PLAYER4_KB_DATA->UP = data & 0x02;
+	PLAYER_KB_DATA[2]->UP = data & 0x01;
+	PLAYER_KB_DATA[3]->UP = data & 0x02;
 
 	data = *KB_DATA2;
-	PLAYER3_KB_DATA->DOWN = data & 0x01;
-	PLAYER4_KB_DATA->DOWN = data & 0x02;
+	PLAYER_KB_DATA[2]->DOWN = data & 0x01;
+	PLAYER_KB_DATA[3]->DOWN = data & 0x02;
 
 	data = *KB_DATA2;
-	PLAYER3_KB_DATA->LEFT = data & 0x01;
-	PLAYER4_KB_DATA->LEFT = data & 0x02;
+	PLAYER_KB_DATA[2]->LEFT = data & 0x01;
+	PLAYER_KB_DATA[3]->LEFT = data & 0x02;
 
 	data = *KB_DATA2;
-	PLAYER3_KB_DATA->RIGHT = data & 0x01;
-	PLAYER4_KB_DATA->RIGHT = data & 0x02;
+	PLAYER_KB_DATA[2]->RIGHT = data & 0x01;
+	PLAYER_KB_DATA[3]->RIGHT = data & 0x02;
+	#endif
 }

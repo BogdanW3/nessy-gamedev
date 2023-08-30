@@ -18,25 +18,41 @@
     Y2, low then high
 */
 
-void draw_pixel(char *where, int x, int y, Colour *colour)
+#ifdef NONES_SIM
+
+void draw_pixel(char * const where, const int x, const int y, const Colour &colour)
+{
+	// TODO: implement
+}
+
+void draw_shape(char * const where, const int x1, const int y1,
+									const int x2, const int y2, const Colour &colour)
+{
+	// TODO: implement
+}
+
+#else
+
+void draw_pixel(char * const where, const int x, const int y, const Colour &colour)
 {
 	while (!(*GPU_STATUS & (1 << (where - GPU_STATUS))));
-	*where = colour->r;
-	*where = colour->g;
-	*where = colour->b;
+	*where = colour.r;
+	*where = colour.g;
+	*where = colour.b;
 	*where = x & 0xFF;
 	*where = (x >> 8) & 0xFF;
 	*where = y & 0xFF;
 	*where = (y >> 8) & 0xFF;
 }
 
-void draw_shape(char *where, int x1, int y1, int x2, int y2, Colour *colour)
+void draw_shape(char * const where, const int x1, const int y1,
+									const int x2, const int y2, const Colour &colour)
 {
 	while (!(*GPU_STATUS & (1 << (where - GPU_STATUS))))
 		;
-	*where = colour->r;
-	*where = colour->g;
-	*where = colour->b;
+	*where = colour.r;
+	*where = colour.g;
+	*where = colour.b;
 	*where = x1 & 0xFF;
 	*where = (x1 >> 8) & 0xFF;
 	*where = y1 & 0xFF;
@@ -47,7 +63,9 @@ void draw_shape(char *where, int x1, int y1, int x2, int y2, Colour *colour)
 	*where = (y2 >> 8) & 0xFF;
 }
 
-void draw_pixel(int x, int y, Colour *colour)
+#endif
+
+void draw_pixel(const int x, const  int y, const Colour &colour)
 {
 	while (!(*GPU_STATUS & (1 << (GPU_RENDER_PIXEL1 - GPU_STATUS))) &&
 		   !(*GPU_STATUS & (1 << (GPU_RENDER_PIXEL2 - GPU_STATUS))))
@@ -59,7 +77,7 @@ void draw_pixel(int x, int y, Colour *colour)
 		draw_pixel(GPU_RENDER_PIXEL1, x, y, colour);
 }
 
-void draw_line(int x1, int y1, int x2, int y2, Colour *colour)
+void draw_line(const int x1, const int y1, const int x2, const int y2, const Colour &colour)
 {
 	while (!(*GPU_STATUS & (1 << (GPU_RENDER_LINE1 - GPU_STATUS))) &&
 		   !(*GPU_STATUS & (1 << (GPU_RENDER_LINE2 - GPU_STATUS))))
@@ -71,7 +89,7 @@ void draw_line(int x1, int y1, int x2, int y2, Colour *colour)
 		draw_shape(GPU_RENDER_LINE1, x1, y1, x2, y2, colour);
 }
 
-void draw_rect(int x1, int y1, int x2, int y2, Colour *colour)
+void draw_rect(const int x1, const int y1, const int x2, const int y2, const Colour &colour)
 {
 	while (!(*GPU_STATUS & (1 << (GPU_RENDER_RECT1 - GPU_STATUS))) &&
 		   !(*GPU_STATUS & (1 << (GPU_RENDER_RECT2 - GPU_STATUS))))
@@ -83,7 +101,7 @@ void draw_rect(int x1, int y1, int x2, int y2, Colour *colour)
 		draw_shape(GPU_RENDER_RECT1, x1, y1, x2, y2, colour);
 }
 
-void draw_pixel(DRAW_PRIORITY priority, int x, int y, Colour *colour)
+void draw_pixel(const DRAW_PRIORITY priority, const int x, const int y, const Colour &colour)
 {
 	if (priority)
 		draw_pixel(GPU_RENDER_PIXEL2, x, y, colour);
@@ -91,7 +109,8 @@ void draw_pixel(DRAW_PRIORITY priority, int x, int y, Colour *colour)
 		draw_pixel(GPU_RENDER_PIXEL1, x, y, colour);
 }
 
-void draw_line(DRAW_PRIORITY priority, int x1, int y1, int x2, int y2, Colour *colour)
+void draw_line(const DRAW_PRIORITY priority, const int x1, const int y1,
+											 const int x2, const int y2, const Colour &colour)
 {
 	if (priority)
 		draw_shape(GPU_RENDER_LINE2, x1, y1, x2, y2, colour);
@@ -99,7 +118,8 @@ void draw_line(DRAW_PRIORITY priority, int x1, int y1, int x2, int y2, Colour *c
 		draw_shape(GPU_RENDER_LINE1, x1, y1, x2, y2, colour);
 }
 
-void draw_rect(DRAW_PRIORITY priority, int x1, int y1, int x2, int y2, Colour *colour)
+void draw_rect(const DRAW_PRIORITY priority, const int x1, const int y1,
+											 const int x2, const int y2, const Colour &colour)
 {
 	if (priority)
 		draw_shape(GPU_RENDER_RECT2, x1, y1, x2, y2, colour);

@@ -23,3 +23,8 @@ uint8_t Player::getId() const
 {
 	return id;
 }
+
+void Player::reset()
+{
+	nextid = 0;
+}

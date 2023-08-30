@@ -3,8 +3,6 @@
 
 #include "player.hpp"
 
-const constexpr uint8_t PLAYER_COUNT = 4;
-
 class Arena
 {
 public:
@@ -17,15 +15,23 @@ public:
 		uint8_t y
 	);
 
-private:
-	const uint8_t height;
-	const uint8_t width;
-	uint8_t **tile_map;
-	Player player[PLAYER_COUNT];
+	void tick();
+	virtual void update();
 
-	Arena(const uint8_t width, const uint8_t height);
+protected:
+	const uint8_t height = 0;
+	const uint8_t width = 0;
+	uint8_t **tile_map = nullptr;
+	const uint8_t player_count = 0;
+	Player *players = nullptr;
+	bool dirty = false;
+
+	void start(const uint8_t width, const uint8_t height, const uint8_t player_count);
 
 	void initTileMap();
+	void initTileMapWalls();
+	void initPlayers();
+
 };
 
 #endif // !ARENA_HPP

@@ -2,31 +2,36 @@
 #define GPU_HPP
 
 struct Colour {
+	Colour(char r, char g, char b) : r(r), g(g), b(b) {}
 	char r;
 	char g;
 	char b;
 };
 
-char *const GPU_STATUS =        (char *)0x4000;
-char *const GPU_RENDER_PIXEL1 = (char *)0x4001;
-char *const GPU_RENDER_PIXEL2 = (char *)0x4002;
-char *const GPU_RENDER_LINE1 =  (char *)0x4003;
-char *const GPU_RENDER_LINE2 =  (char *)0x4004;
-char *const GPU_RENDER_RECT1 =  (char *)0x4005;
-char *const GPU_RENDER_RECT2 =  (char *)0x4006;
+char * const GPU_STATUS =        (char * const)0x4000;
+char * const GPU_RENDER_PIXEL1 = (char * const)0x4001;
+char * const GPU_RENDER_PIXEL2 = (char * const)0x4002;
+char * const GPU_RENDER_LINE1 =  (char * const)0x4003;
+char * const GPU_RENDER_LINE2 =  (char * const)0x4004;
+char * const GPU_RENDER_RECT1 =  (char * const)0x4005;
+char * const GPU_RENDER_RECT2 =  (char * const)0x4006;
 
-void draw_pixel(char* where, int x, int y, Colour* colour);
-void draw_shape(char* where, int x1, int y1, int x2, int y2, Colour* colour);
+void draw_pixel(char* const where, const int x, const int y, const Colour& colour);
+void draw_shape(char* const where, const int x1, const int y1,
+								   const int x2, const int y2, const Colour& colour);
 
-void draw_pixel(int x, int y, Colour* colour);
-void draw_line(int x1, int y1, int x2, int y2, Colour* colour);
-void draw_rect(int x1, int y1, int x2, int y2, Colour* colour);
+void draw_pixel(const int x, const int y, const Colour& colour);
+void draw_line(const int x1, const int y1,
+			   const int x2, const int y2, const Colour& colour);
+void draw_rect(const int x1, const int y1, const int x2, const int y2, const Colour& colour);
 
 
 enum DRAW_PRIORITY: bool {PRIO_LOW = 0,PRIO_HIGH = 1};
 
-void draw_pixel(DRAW_PRIORITY priority, int x, int y, Colour* colour);
-void draw_line(DRAW_PRIORITY priority, int x1, int y1, int x2, int y2, Colour* colour);
-void draw_rect(DRAW_PRIORITY priority, int x1, int y1, int x2, int y2, Colour* colour);
+void draw_pixel(const DRAW_PRIORITY priority, const int x, const int y, const Colour& colour);
+void draw_line(const DRAW_PRIORITY priority, const int x1, const int y1,
+											 const int x2, const int y2, const Colour& colour);
+void draw_rect(const DRAW_PRIORITY priority, const int x1, const int y1,
+											 const int x2, const int y2, const Colour& colour);
 
 #endif // !GPU_HPP
