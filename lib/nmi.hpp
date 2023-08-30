@@ -1,6 +1,6 @@
-#ifndef NMI_H
-#define NMI_H
+#ifndef NMI_HPP
+#define NMI_HPP
 
-extern "C" void __attribute__((interrupt)) nmi();
+extern "C" __attribute__((interrupt)) void nmi();
 
-#endif
+#endif // !NMI_HPP

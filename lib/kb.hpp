@@ -1,6 +1,9 @@
+#ifndef KB_HPP
+#define KB_HPP
+
 struct PlayerKBData
 {
-    bool A,B,SELECT,START,UP,DOWN,LEFT,RIGHT;
+	bool A,B,SELECT,START,UP,DOWN,LEFT,RIGHT;
 };
 
 void kb_handle_nmi();
@@ -14,3 +17,4 @@ PlayerKBData* const PLAYER2_KB_DATA = PLAYER1_KB_DATA + 1;
 PlayerKBData* const PLAYER3_KB_DATA = PLAYER1_KB_DATA + 2;
 PlayerKBData* const PLAYER4_KB_DATA = PLAYER1_KB_DATA + 3;
 
+#endif // !KB_HPP

@@ -1,6 +1,6 @@
-#ifndef IRQ_H
-#define IRQ_H
+#ifndef IRQ_HPP
+#define IRQ_HPP
 
 extern "C" __attribute__((interrupt)) void irq();
 
-#endif
+#endif // !IRQ_HPP

@@ -9,74 +9,73 @@
 
 void kb_handle_nmi()
 {
-    *KB_CONTROL = 1;
-    *KB_CONTROL = 0;
+	*KB_CONTROL = 1;
+	*KB_CONTROL = 0;
 
-    char data = 0;
+	char data = 0;
 
-    data = *KB_DATA1;
-    PLAYER1_KB_DATA->A = data & 0x01;
-    PLAYER2_KB_DATA->A = data & 0x02;
+	data = *KB_DATA1;
+	PLAYER1_KB_DATA->A = data & 0x01;
+	PLAYER2_KB_DATA->A = data & 0x02;
 
-    data = *KB_DATA1;
-    PLAYER1_KB_DATA->B = data & 0x01;
-    PLAYER2_KB_DATA->B = data & 0x02;
-    
-    data = *KB_DATA1;
-    PLAYER1_KB_DATA->SELECT = data & 0x01;
-    PLAYER2_KB_DATA->SELECT = data & 0x02;
+	data = *KB_DATA1;
+	PLAYER1_KB_DATA->B = data & 0x01;
+	PLAYER2_KB_DATA->B = data & 0x02;
 
-    data = *KB_DATA1;
-    PLAYER1_KB_DATA->START = data & 0x01;
-    PLAYER2_KB_DATA->START = data & 0x02;
+	data = *KB_DATA1;
+	PLAYER1_KB_DATA->SELECT = data & 0x01;
+	PLAYER2_KB_DATA->SELECT = data & 0x02;
 
-    data = *KB_DATA1;
-    PLAYER1_KB_DATA->UP = data & 0x01;
-    PLAYER2_KB_DATA->UP = data & 0x02;
+	data = *KB_DATA1;
+	PLAYER1_KB_DATA->START = data & 0x01;
+	PLAYER2_KB_DATA->START = data & 0x02;
 
-    data = *KB_DATA1;
-    PLAYER1_KB_DATA->DOWN = data & 0x01;
-    PLAYER2_KB_DATA->DOWN = data & 0x02;
+	data = *KB_DATA1;
+	PLAYER1_KB_DATA->UP = data & 0x01;
+	PLAYER2_KB_DATA->UP = data & 0x02;
 
-    data = *KB_DATA1;
-    PLAYER1_KB_DATA->LEFT = data & 0x01;
-    PLAYER2_KB_DATA->LEFT = data & 0x02;
+	data = *KB_DATA1;
+	PLAYER1_KB_DATA->DOWN = data & 0x01;
+	PLAYER2_KB_DATA->DOWN = data & 0x02;
 
-    data = *KB_DATA1;
-    PLAYER1_KB_DATA->RIGHT = data & 0x01;
-    PLAYER2_KB_DATA->RIGHT = data & 0x02;
+	data = *KB_DATA1;
+	PLAYER1_KB_DATA->LEFT = data & 0x01;
+	PLAYER2_KB_DATA->LEFT = data & 0x02;
 
-    
-    data = *KB_DATA2;
-    PLAYER3_KB_DATA->A = data & 0x01;
-    PLAYER4_KB_DATA->A = data & 0x02;
+	data = *KB_DATA1;
+	PLAYER1_KB_DATA->RIGHT = data & 0x01;
+	PLAYER2_KB_DATA->RIGHT = data & 0x02;
 
-    data = *KB_DATA2;
-    PLAYER3_KB_DATA->B = data & 0x01;
-    PLAYER4_KB_DATA->B = data & 0x02;
 
-    data = *KB_DATA2;
-    PLAYER3_KB_DATA->SELECT = data & 0x01;
-    PLAYER4_KB_DATA->SELECT = data & 0x02;
-    
-    data = *KB_DATA2;
-    PLAYER3_KB_DATA->START = data & 0x01;
-    PLAYER4_KB_DATA->START = data & 0x02;
+	data = *KB_DATA2;
+	PLAYER3_KB_DATA->A = data & 0x01;
+	PLAYER4_KB_DATA->A = data & 0x02;
 
-    data = *KB_DATA2;
-    PLAYER3_KB_DATA->UP = data & 0x01;
-    PLAYER4_KB_DATA->UP = data & 0x02;
+	data = *KB_DATA2;
+	PLAYER3_KB_DATA->B = data & 0x01;
+	PLAYER4_KB_DATA->B = data & 0x02;
 
-    data = *KB_DATA2;
-    PLAYER3_KB_DATA->DOWN = data & 0x01;
-    PLAYER4_KB_DATA->DOWN = data & 0x02;
+	data = *KB_DATA2;
+	PLAYER3_KB_DATA->SELECT = data & 0x01;
+	PLAYER4_KB_DATA->SELECT = data & 0x02;
 
-    data = *KB_DATA2;
-    PLAYER3_KB_DATA->LEFT = data & 0x01;
-    PLAYER4_KB_DATA->LEFT = data & 0x02;
+	data = *KB_DATA2;
+	PLAYER3_KB_DATA->START = data & 0x01;
+	PLAYER4_KB_DATA->START = data & 0x02;
 
-    data = *KB_DATA2;
-    PLAYER3_KB_DATA->RIGHT = data & 0x01;
-    PLAYER4_KB_DATA->RIGHT = data & 0x02;
+	data = *KB_DATA2;
+	PLAYER3_KB_DATA->UP = data & 0x01;
+	PLAYER4_KB_DATA->UP = data & 0x02;
 
+	data = *KB_DATA2;
+	PLAYER3_KB_DATA->DOWN = data & 0x01;
+	PLAYER4_KB_DATA->DOWN = data & 0x02;
+
+	data = *KB_DATA2;
+	PLAYER3_KB_DATA->LEFT = data & 0x01;
+	PLAYER4_KB_DATA->LEFT = data & 0x02;
+
+	data = *KB_DATA2;
+	PLAYER3_KB_DATA->RIGHT = data & 0x01;
+	PLAYER4_KB_DATA->RIGHT = data & 0x02;
 }

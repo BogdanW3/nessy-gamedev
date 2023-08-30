@@ -3,6 +3,7 @@
 ### V1.3.0(w) 2010 - 2013 Oliver Schmidt & Patryk "Silver Dream !" Łogiewa  ###
 ###############################################################################
 
+$(shell if [ ! -f Makefile.user ]; then cp Makefile.user.example Makefile.user; fi)
 
 -include Makefile.user
 
@@ -32,7 +33,7 @@ LIBS    :=
 # Custom linker configuration file
 # Use only if you don't want to place it in SRCDIR
 # Default: none
-CONFIG  := 
+CONFIG  :=
 
 # Additional C compiler flags and options.
 # Default: none
@@ -75,7 +76,7 @@ POSTEMUCMD :=
 
 # On Windows machines VICE emulators may not be available in the PATH by default.
 # In such case, please set the variable below to point to directory containing
-# VICE emulators. 
+# VICE emulators.
 #VICE_HOME := "C:\Program Files\WinVICE-2.2-x86\"
 VICE_HOME :=
 
@@ -204,12 +205,10 @@ ifeq ($(shell echo),)
   MKDIR = mkdir -p $1
   RMDIR = rmdir $1
   RMFILES = $(RM) $1
-  EXT = 
 else
   MKDIR = mkdir $(subst /,\,$1)
   RMDIR = rmdir $(subst /,\,$1)
   RMFILES = $(if $1,del /f $(subst /,\,$1))
-  EXT = .bat
 endif
 COMMA := ,
 SPACE := $(N/A) $(N/A)
@@ -219,7 +218,9 @@ define NEWLINE
 endef
 # Note: Do not remove any of the two empty lines above !
 
-CC := $(CC)$(EXT)
+ifeq ($(OS),Windows_NT)
+  CC := $(CC).bat
+endif
 
 TARGETLIST := $(subst $(COMMA),$(SPACE),$(TARGETS))
 
@@ -303,7 +304,7 @@ $(TARGETOBJDIR)/%.o: %.c | $(TARGETOBJDIR)
 #   $(CL) -t $(CC65TARGET) -c --create-dep $(@:.o=.d) $(CFLAGS) -o $@ $<
 	$(CC) -c $(CFLAGS) -o $@ $<
 
-  
+
 vpath %.cpp $(SRCDIR)/$(TARGETLIST) $(SRCDIR)
 
 $(TARGETOBJDIR)/%.o: %.cpp | $(TARGETOBJDIR)
@@ -320,7 +321,7 @@ $(TARGETOBJDIR)/%.o: %.S | $(TARGETOBJDIR)
 
 $(PROGRAM): $(CONFIG) $(OBJECTS) $(LIBS)
 # $(CL) -t $(CC65TARGET) $(LDFLAGS) -o $@ $(patsubst %.cfg,-C %.cfg,$^)
-	${CC} ${LDFLAGS} -o ${@} ${OBJECTS} ${LIBS} 
+	${CC} ${LDFLAGS} -o ${@} ${OBJECTS} ${LIBS}
 #	$(DA) -v --cpu 6502 -o $(@:.nes=.asm) $@
 	$(OD) -w --source $(PROGRAM).elf > $(@:.nes=.asm)
 

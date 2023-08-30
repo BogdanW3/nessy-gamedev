@@ -1,10 +1,10 @@
-#ifndef GPU_H
-#define GPU_H
+#ifndef GPU_HPP
+#define GPU_HPP
 
 struct Colour {
-    char r;
-    char g;
-    char b;
+	char r;
+	char g;
+	char b;
 };
 
 char *const GPU_STATUS =        (char *)0x4000;
@@ -29,5 +29,4 @@ void draw_pixel(DRAW_PRIORITY priority, int x, int y, Colour* colour);
 void draw_line(DRAW_PRIORITY priority, int x1, int y1, int x2, int y2, Colour* colour);
 void draw_rect(DRAW_PRIORITY priority, int x1, int y1, int x2, int y2, Colour* colour);
 
-
-#endif
+#endif // !GPU_HPP

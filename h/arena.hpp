@@ -1,37 +1,31 @@
-#ifndef ARENA_H
-#define ARENA_H
+#ifndef ARENA_HPP
+#define ARENA_HPP
 
-#include "../h/player.hpp"
+#include "player.hpp"
 
+const constexpr uint8_t PLAYER_COUNT = 4;
 
-const constexpr PLAYER_COUNT = 4;
-
-class Arena 
+class Arena
 {
-	public:
-		uint8_t inline getWidth() const;
-		uint8_t inline getHeight() const;
-		bool inline isPaintable(uint8_t x, uint8_t y) const;
-		void paint(
-			const Player& player, 
-			uint8_t x, 
-			uint8_t y
-		);
+public:
+	constexpr inline uint8_t getWidth() const;
+	constexpr inline uint8_t getHeight() const;
+	inline bool isPaintable(uint8_t x, uint8_t y) const;
+	void paint(
+		uint8_t player_id,
+		uint8_t x,
+		uint8_t y
+	);
 
-	private:
-		const constexpr uint8_t height;
-		const constexpr uint8_t width;
-		uint8_t tile_map[width][height]
-		Player player[PLAYER_COUNT];
-		Arena(
-			const constexpr uint8_t width, 
-			const constexpr uint8_t height
-		);
-		
-		void fillTileMap();
-		
+private:
+	const uint8_t height;
+	const uint8_t width;
+	uint8_t **tile_map;
+	Player player[PLAYER_COUNT];
 
-}		
+	Arena(const uint8_t width, const uint8_t height);
 
-#endif // !ARENA_H
+	void initTileMap();
+};
 
+#endif // !ARENA_HPP
