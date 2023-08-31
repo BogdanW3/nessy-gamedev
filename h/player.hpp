@@ -1,7 +1,11 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
+#ifndef NONES
 #include "../lib/stdint.hpp"
+#else
+#include <stdint.h>
+#endif
 
 class Player {
 public:

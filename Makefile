@@ -13,6 +13,9 @@ DA = $(CC65_DIR)bin/da65
 CC = $(LLVM_MOS_DIR)bin/mos-nes-cnrom-clang
 OD = $(LLVM_MOS_DIR)bin/llvm-objdump
 
+CC_NONES = g++
+OD_NONES = objdump
+
 ###############################################################################
 ### In order to override defaults - values can be assigned to the variables ###
 ###############################################################################
@@ -218,16 +221,25 @@ define NEWLINE
 endef
 # Note: Do not remove any of the two empty lines above !
 
+# The compiler is actually a bat script in the windows redist
 ifeq ($(OS),Windows_NT)
   CC := $(CC).bat
 endif
+
 
 TARGETLIST := $(subst $(COMMA),$(SPACE),$(TARGETS))
 
 ifeq ($(words $(TARGETLIST)),1)
 
-# Set PROGRAM to something like 'myprog.c64'.
-override PROGRAM := $(PROGRAM).$(TARGETLIST)
+ifneq ($(NONES),)
+  CC = $(CC_NONES)
+  OD = $(OD_NONES)
+  CFLAGS += -DNONES -pthread
+  LDFLAGS = -pthread
+  LLIBS = -lpthread -lraylib
+else
+   override PROGRAM := $(PROGRAM).$(TARGETLIST)
+endif
 
 # Add all source files to sources
 # This is different than the original Makefile, as we don't target multiple architectures
@@ -321,9 +333,9 @@ $(TARGETOBJDIR)/%.o: %.S | $(TARGETOBJDIR)
 
 $(PROGRAM): $(CONFIG) $(OBJECTS) $(LIBS)
 # $(CL) -t $(CC65TARGET) $(LDFLAGS) -o $@ $(patsubst %.cfg,-C %.cfg,$^)
-	${CC} ${LDFLAGS} -o ${@} ${OBJECTS} ${LIBS}
+	${CC} ${LDFLAGS} -o ${@} ${OBJECTS} ${LIBS} $(LLIBS)
 #	$(DA) -v --cpu 6502 -o $(@:.nes=.asm) $@
-	$(OD) -w --source $(PROGRAM).elf > $(@:.nes=.asm)
+	$(OD) -w --source $(PROGRAM).elf > $(@).asm
 
 dump: $(PROGRAM)
 	$(OD) -w --source $(PROGRAM).elf --full-contents > $(PROGRAM).full.asm

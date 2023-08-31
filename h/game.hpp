@@ -1,8 +1,11 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-
+#ifndef NONES
 #include "../lib/stdint.hpp"
+#else
+#include <stdint.h>
+#endif
 #include "arena.hpp"
 
 namespace Game {

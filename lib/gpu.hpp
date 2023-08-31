@@ -8,6 +8,15 @@ struct Colour {
 	char b;
 };
 
+#ifdef NONES
+extern char * GPU_STATUS;
+extern char * GPU_RENDER_PIXEL1;
+extern char * GPU_RENDER_PIXEL2;
+extern char * GPU_RENDER_LINE1;
+extern char * GPU_RENDER_LINE2;
+extern char * GPU_RENDER_RECT1;
+extern char * GPU_RENDER_RECT2;
+#else
 char * const GPU_STATUS =        (char * const)0x4000;
 char * const GPU_RENDER_PIXEL1 = (char * const)0x4001;
 char * const GPU_RENDER_PIXEL2 = (char * const)0x4002;
@@ -15,6 +24,7 @@ char * const GPU_RENDER_LINE1 =  (char * const)0x4003;
 char * const GPU_RENDER_LINE2 =  (char * const)0x4004;
 char * const GPU_RENDER_RECT1 =  (char * const)0x4005;
 char * const GPU_RENDER_RECT2 =  (char * const)0x4006;
+#endif
 
 void draw_pixel(char* const where, const int x, const int y, const Colour& colour);
 void draw_shape(char* const where, const int x1, const int y1,

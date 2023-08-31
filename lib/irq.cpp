@@ -1,4 +1,8 @@
-extern "C" __attribute__((interrupt)) void irq()
+extern "C"
+#ifndef NONES
+__attribute__((interrupt))
+#endif
+void irq()
 {
 
 }

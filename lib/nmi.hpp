@@ -1,6 +1,10 @@
 #ifndef NMI_HPP
 #define NMI_HPP
 
-extern "C" __attribute__((interrupt)) void nmi();
+extern "C"
+#ifndef NONES
+__attribute__((interrupt))
+#endif
+void nmi();
 
 #endif // !NMI_HPP

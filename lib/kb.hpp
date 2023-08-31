@@ -15,7 +15,11 @@ namespace KB
 
 	void tick();
 
+#ifdef NONES
+	extern PlayerKBData** PLAYER_KB_DATA;
+#else
 	PlayerKBData** const PLAYER_KB_DATA = (PlayerKBData**)0x1F00;
+#endif
 }; // namespace KB
 
 #endif // !KB_HPP

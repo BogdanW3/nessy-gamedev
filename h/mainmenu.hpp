@@ -1,7 +1,11 @@
 #ifndef MAINMENU_HPP
 #define MAINMENU_HPP
 
+#ifndef NONES
 #include "../lib/stdint.hpp"
+#else
+#include <stdint.h>
+#endif
 
 namespace MainMenu {
 	// at the very beginning, and after scoresreen

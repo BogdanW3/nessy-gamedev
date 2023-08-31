@@ -2,3 +2,4 @@
 
 # CC65_DIR = E:\\cc65\\
 LLVM_MOS_DIR = E:\\llvm-mos\\
+NONES =
