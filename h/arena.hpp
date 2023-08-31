@@ -16,12 +16,12 @@ public:
 	);
 
 	void tick();
-	virtual void update();
+	void update();
 
 protected:
-	const uint8_t height = 0;
-	const uint8_t width = 0;
-	const uint8_t player_count = 0;
+	uint8_t height = 0;
+	uint8_t width = 0;
+	uint8_t player_count = 0;
 	bool dirty = false;
 	uint8_t *tile_map = nullptr;
 	Player *players = nullptr;

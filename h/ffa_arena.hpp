@@ -11,5 +11,5 @@ public:
 
 	void start(const Size size);
 protected:
-	virtual void update() override;
+	void update();
 };

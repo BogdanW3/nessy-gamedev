@@ -5,11 +5,11 @@
 
 void Arena::start(const uint8_t width, const uint8_t height, const uint8_t player_count)
 {
-	const_cast<uint8_t&>(this->width) = width;
-	const_cast<uint8_t&>(this->height) = height;
-	const_cast<uint8_t&>(this->player_count) = player_count;
+	this->width = width;
+	this->height = height;
+	this->player_count = player_count;
 	dirty = true;
-	players = (Player*)(&(this->player_count) + 1);
+	players = (Player*)(&(dirty) + 1);
 	for (uint8_t i = 0; i < player_count; i++)
 	{
 		players[i] = Player();
@@ -139,6 +139,10 @@ void Arena::tick()
 
 }
 
+void Arena::update()
+{
+
+}
 /*
 Arena::~Arena()
 {
