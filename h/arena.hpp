@@ -21,10 +21,10 @@ public:
 protected:
 	const uint8_t height = 0;
 	const uint8_t width = 0;
-	uint8_t **tile_map = nullptr;
 	const uint8_t player_count = 0;
-	Player *players = nullptr;
 	bool dirty = false;
+	uint8_t *tile_map = nullptr;
+	Player *players = nullptr;
 
 	void start(const uint8_t width, const uint8_t height, const uint8_t player_count);
 
