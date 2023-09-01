@@ -8,4 +8,6 @@ typedef unsigned int uint;
 
 typedef uint16_t size_t;
 
+char* mem_start;
+
 #endif // !STDINT_HPP

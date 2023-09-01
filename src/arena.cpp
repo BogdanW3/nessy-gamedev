@@ -2,6 +2,7 @@
 
 #include "../h/tile.hpp"
 #include "../lib/kb.hpp"
+#include "../lib/gpu.hpp"
 
 void Arena::start(const uint8_t width, const uint8_t height, const uint8_t player_count)
 {
@@ -9,7 +10,7 @@ void Arena::start(const uint8_t width, const uint8_t height, const uint8_t playe
 	this->height = height;
 	this->player_count = player_count;
 	dirty = true;
-	players = (Player*)(&(dirty) + 1);
+	players = (Player*)(this + 1);
 	for (uint8_t i = 0; i < player_count; i++)
 	{
 		players[i] = Player();
@@ -60,6 +61,12 @@ void Arena::initPlayers()
 	}
 }
 
+void Arena::drawTile(uint8_t x, uint8_t y)
+{
+	uint8_t tile = tile_map[x + width * y];
+//	draw_rect(x*10, y*10, 10, 10, tile);
+}
+
 constexpr inline uint8_t Arena::getWidth() const
 {
 	return width;
@@ -107,34 +114,42 @@ void Arena::tick()
 		Player& p = players[i];
 		KB::PlayerKBData* data = KB::PLAYER_KB_DATA[i];
 		if(data->A) {
-			paint(p.id, p.position.x, p.position.y);
+			Player::Vec2D aim = p.getAim();
+			paint(p.id, p.position.x + aim.x, p.position.y + aim.y);
 			dirty = true;
 		}
 		if(data->UP) {
 			if(isPaintable(p.position.x, p.position.y-1)) {
 				p.position.y--;
+				paint(p.id, p.position.x, p.position.y);
 				dirty = true;
+				p.dirty = true;
 			}
 		}
 		if(data->DOWN) {
 			if(isPaintable(p.position.x, p.position.y+1)) {
 				p.position.y++;
+				paint(p.id, p.position.x, p.position.y);
 				dirty = true;
+				p.dirty = true;
 			}
 		}
 		if(data->LEFT) {
 			if(isPaintable(p.position.x-1, p.position.y)) {
 				p.position.x--;
+				paint(p.id, p.position.x, p.position.y);
 				dirty = true;
+				p.dirty = true;
 			}
 		}
 		if(data->RIGHT) {
 			if(isPaintable(p.position.x+1, p.position.y)) {
 				p.position.x++;
+				paint(p.id, p.position.x, p.position.y);
 				dirty = true;
+				p.dirty = true;
 			}
 		}
-
 	}
 
 }

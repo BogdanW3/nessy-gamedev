@@ -1,6 +1,6 @@
 #include "../h/2v2_arena.hpp"
 
-static const uint8_t sizes[3][2] = {
+static const constexpr uint8_t sizes[3][2] = {
 	{ 20, 15 },
 	{ 28, 21 },
 	{ 32, 24 },

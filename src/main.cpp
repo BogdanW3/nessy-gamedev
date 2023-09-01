@@ -6,9 +6,15 @@
 #ifdef NONES
 #include <raylib.h>
 #include <thread>
+#include <algorithm>
 
 #include "../lib/nmi.hpp"
 #include "../lib/kb.hpp"
+
+#include "../h/1v1_arena.hpp"
+#include "../h/2v2_arena.hpp"
+#include "../h/ffa_arena.hpp"
+
 #else
 bool WindowShouldClose()
 {
@@ -27,6 +33,8 @@ int main()
 	GPU_RENDER_LINE2 = GPU_STATUS + 4;
 	GPU_RENDER_RECT1 = GPU_STATUS + 5;
 	GPU_RENDER_RECT2 = GPU_STATUS + 6;
+
+	Game::arena = (Arena*) malloc(800*600*3); //larger than the arena, in any case
 
 	KB::PLAYER_KB_DATA = new KB::PlayerKBData*[4];
 	for (int i = 0; i < 4; i++)

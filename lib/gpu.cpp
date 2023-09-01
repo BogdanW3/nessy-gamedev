@@ -18,7 +18,6 @@
     Y2, low then high
 */
 
-#ifdef NONES
 char * GPU_STATUS;
 char * GPU_RENDER_PIXEL1;
 char * GPU_RENDER_PIXEL2;
@@ -26,6 +25,8 @@ char * GPU_RENDER_LINE1;
 char * GPU_RENDER_LINE2;
 char * GPU_RENDER_RECT1;
 char * GPU_RENDER_RECT2;
+
+#ifdef NONES
 #include <raylib.h>
 
 void draw_pixel(char * const where, const int x, const int y, const Colour &colour)

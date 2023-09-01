@@ -32,6 +32,8 @@ protected:
 	void initTileMapWalls();
 	void initPlayers();
 
+	void drawTile(uint8_t x, uint8_t y);
+
 };
 
 #endif // !ARENA_HPP
