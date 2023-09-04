@@ -15,10 +15,11 @@ public:
 	uint8_t getScore() const;
 	uint8_t getId() const;
 	static void reset();
-	typedef struct {
+	struct Vec2D {
+		constexpr Vec2D(uint16_t x, uint16_t y): x(x), y(y) {}
 		uint16_t x;
 		uint16_t y;
-	} Vec2D;
+	};
 
 	Vec2D getAim() const;
 
@@ -35,9 +36,8 @@ private:
 		RIGHT
 	};
 
-	Direction facing;
+	Direction facing = UP;
 
-	bool dirty = true;
 	friend class Arena;
 };
 

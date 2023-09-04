@@ -2,18 +2,17 @@
 
 #include "../h/tile.hpp"
 #include "../lib/kb.hpp"
-#include "../lib/gpu.hpp"
 
 static constexpr Colour PLAYER_COLOURS[4] = {
 	{0xFFu, 0x00u, 0x00u},
-	{0x00u, 0xFFu, 0x00u},
 	{0x00u, 0x00u, 0xFFu},
+	{0x00u, 0xFFu, 0x00u},
 	{0xFFu, 0xFFu, 0x00u}
 };
 
 constexpr const Player::Vec2D Arena::getScalingFactor() const
 {
-	return {800u/width, 600u/height};
+	return Player::Vec2D(800/width, 600/height);
 }
 
 void Arena::start(const uint8_t width, const uint8_t height, const uint8_t player_count)
@@ -76,8 +75,13 @@ void Arena::initPlayers()
 void Arena::drawTile(uint8_t x, uint8_t y) const
 {
 	uint8_t tile = tile_map[x + width * y];
-	consts Player::Vec2D scaling = getScalingFactor();
-	draw_rect(x*scaling.x, y*scaling.y, (x+1)*scaling.x, (y+1)*scaling.y, TILE_COLOURS[tile]);
+	const Player::Vec2D scaling = getScalingFactor();
+	if (tile & TILE_WALL_MASK)
+		draw_rect(x*scaling.x, y*scaling.y, (x+1)*scaling.x, (y+1)*scaling.y, {0x60u, 0x60u, 0x60u});
+	else if (tile & TILE_TAKEN_MASK)
+		draw_rect(x*scaling.x, y*scaling.y, (x+1)*scaling.x, (y+1)*scaling.y, pTILE_COLOURS[tile & TILE_OWNER_MASK]);
+	else
+		draw_rect(x*scaling.x, y*scaling.y, (x+1)*scaling.x, (y+1)*scaling.y, {0x00u, 0x00u, 0x00u});
 }
 
 constexpr inline uint8_t Arena::getWidth() const
@@ -102,7 +106,7 @@ void Arena::paint(uint8_t player_id, uint8_t x, uint8_t y)
 {
 	if(player_id >= player_count) return;
 	if(!isPaintable(x,y)) return;
-	uint8_t tile = tile_map[x + width * y];
+	uint8_t& tile = tile_map[x + width * y];
 
 	//Decrease score of last owner (if they exists)
 	if(tile & TILE_TAKEN_MASK) {
@@ -134,33 +138,33 @@ void Arena::tick()
 		if(data->UP) {
 			if(isPaintable(p.position.x, p.position.y-1)) {
 				p.position.y--;
+				p.facing = Player::UP;
 				paint(p.id, p.position.x, p.position.y);
 				dirty = true;
-				p.dirty = true;
 			}
 		}
 		if(data->DOWN) {
 			if(isPaintable(p.position.x, p.position.y+1)) {
 				p.position.y++;
+				p.facing = Player::DOWN;
 				paint(p.id, p.position.x, p.position.y);
 				dirty = true;
-				p.dirty = true;
 			}
 		}
 		if(data->LEFT) {
 			if(isPaintable(p.position.x-1, p.position.y)) {
 				p.position.x--;
+				p.facing = Player::LEFT;
 				paint(p.id, p.position.x, p.position.y);
 				dirty = true;
-				p.dirty = true;
 			}
 		}
 		if(data->RIGHT) {
 			if(isPaintable(p.position.x+1, p.position.y)) {
 				p.position.x++;
+				p.facing = Player::RIGHT;
 				paint(p.id, p.position.x, p.position.y);
 				dirty = true;
-				p.dirty = true;
 			}
 		}
 	}
@@ -179,15 +183,12 @@ void Arena::update()
 			}
 		}
 		dirty = false;
-	}
-	for(uint8_t i = 0; i < player_count; i++)
-	{
-		Player& p = players[i];
-		if(p.dirty)
+		Player::Vec2D scaling = getScalingFactor();
+		for(uint8_t i = 0; i < player_count; i++)
 		{
-			draw_rect(p.position.x*10 - 4, p.position.y*10 - 4,
-				 p.position.x*10 + 4, p.position.y*10 + 4, PLAYER_COLOURS[p.id]);
-			p.dirty = false;
+			Player& p = players[i];
+			draw_rect(p.position.x*scaling.x - 7, p.position.y*scaling.y - 7,
+				p.position.x*scaling.x + 7, p.position.y*scaling.y + 7, PLAYER_COLOURS[p.id]);
 		}
 	}
 }

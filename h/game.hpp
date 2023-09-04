@@ -11,7 +11,7 @@
 namespace Game {
 	// when the game starts from the main menu
 	void start();
-	// when the game stops and we go to the scorescreen
+	// when the game stops and we go back to the main menu
 	void stop();
 	// when the timer ticks
 	void tick();

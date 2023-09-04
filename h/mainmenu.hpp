@@ -8,7 +8,7 @@
 #endif
 
 namespace MainMenu {
-	// at the very beginning, and after scoresreen
+	// at the very beginning, and after the game
 	void start();
 	// when the game starts
 	void stop();

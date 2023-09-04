@@ -2,6 +2,7 @@
 #define ARENA_HPP
 
 #include "player.hpp"
+#include "../lib/gpu.hpp"
 
 class Arena
 {
@@ -25,6 +26,8 @@ protected:
 	bool dirty = false;
 	uint8_t *tile_map = nullptr;
 	Player *players = nullptr;
+
+	const Colour* pTILE_COLOURS = nullptr;
 
 	void start(const uint8_t width, const uint8_t height, const uint8_t player_count);
 

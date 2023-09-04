@@ -9,6 +9,11 @@ public:
 	};
 
 	void start(const Size size);
+
+	static const uint8_t TILE_MAP_SMALL[];
+	static const uint8_t TILE_MAP_MEDIUM[];
+	static const uint8_t TILE_MAP_LARGE[];
+	static const Colour TILE_COLOURS[2];
 protected:
 	void update();
 };

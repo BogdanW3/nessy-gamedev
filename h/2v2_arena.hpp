@@ -8,7 +8,10 @@ public:
 		LARGE = 2
 	};
 
+
 	void start(const Size size);
+
+	static const Colour TILE_COLOURS[4];
 protected:
 	void update();
 };

@@ -1,5 +1,7 @@
 #include "../h/game.hpp"
 
+#include "../h/mainmenu.hpp"
+
 namespace Game {
 	bool running = false;
 	uint8_t time = 0;
@@ -20,6 +22,10 @@ namespace Game {
 		if (!running) return;
 		time++;
 		arena->tick();
+		if (time == 72*60) {
+			stop();
+			MainMenu::start();
+		}
 	}
 
 	void update()
