@@ -32,8 +32,9 @@ protected:
 	void initTileMapWalls();
 	void initPlayers();
 
-	void drawTile(uint8_t x, uint8_t y);
+	void drawTile(uint8_t x, uint8_t y) const;
 
+	constexpr const Player::Vec2D getScalingFactor() const;
 };
 
 #endif // !ARENA_HPP

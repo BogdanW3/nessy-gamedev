@@ -4,6 +4,18 @@
 #include "../lib/kb.hpp"
 #include "../lib/gpu.hpp"
 
+static constexpr Colour PLAYER_COLOURS[4] = {
+	{0xFFu, 0x00u, 0x00u},
+	{0x00u, 0xFFu, 0x00u},
+	{0x00u, 0x00u, 0xFFu},
+	{0xFFu, 0xFFu, 0x00u}
+};
+
+constexpr const Player::Vec2D Arena::getScalingFactor() const
+{
+	return {800u/width, 600u/height};
+}
+
 void Arena::start(const uint8_t width, const uint8_t height, const uint8_t player_count)
 {
 	this->width = width;
@@ -61,10 +73,11 @@ void Arena::initPlayers()
 	}
 }
 
-void Arena::drawTile(uint8_t x, uint8_t y)
+void Arena::drawTile(uint8_t x, uint8_t y) const
 {
 	uint8_t tile = tile_map[x + width * y];
-//	draw_rect(x*10, y*10, 10, 10, tile);
+	consts Player::Vec2D scaling = getScalingFactor();
+	draw_rect(x*scaling.x, y*scaling.y, (x+1)*scaling.x, (y+1)*scaling.y, TILE_COLOURS[tile]);
 }
 
 constexpr inline uint8_t Arena::getWidth() const
@@ -156,7 +169,27 @@ void Arena::tick()
 
 void Arena::update()
 {
-
+	if(dirty)
+	{
+		for(uint8_t i = 0; i < width; i++)
+		{
+			for(uint8_t j = 0; j < height; j++)
+			{
+				drawTile(i,j);
+			}
+		}
+		dirty = false;
+	}
+	for(uint8_t i = 0; i < player_count; i++)
+	{
+		Player& p = players[i];
+		if(p.dirty)
+		{
+			draw_rect(p.position.x*10 - 4, p.position.y*10 - 4,
+				 p.position.x*10 + 4, p.position.y*10 + 4, PLAYER_COLOURS[p.id]);
+			p.dirty = false;
+		}
+	}
 }
 /*
 Arena::~Arena()

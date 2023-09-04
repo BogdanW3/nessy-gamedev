@@ -1,11 +1,16 @@
 #ifndef GPU_HPP
 #define GPU_HPP
 
+#ifndef NONES
+#include "stdint.hpp"
+#else
+#include <stdint.h>
+#endif
 struct Colour {
-	Colour(char r, char g, char b) : r(r), g(g), b(b) {}
-	char r;
-	char g;
-	char b;
+	constexpr Colour(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
 };
 
 #ifdef NONES
