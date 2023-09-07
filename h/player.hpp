@@ -27,7 +27,11 @@ private:
 	static uint8_t nextid;
 	uint8_t id;
 	uint8_t score;
+	// the player's position is 2^4 (or 5?) times larger than tile position,
+	// for slower movement
 	Vec2D position;
+	static constexpr const uint8_t position_multiplier_shift = 5;
+
 
 	enum Direction {
 		UP,

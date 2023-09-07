@@ -12,11 +12,12 @@
 namespace MainMenu {
 	bool running = false;
 	Item activeItem = MainMenu::ONE_V_ONE;
-	bool dirty = true;
+	bool dirty = false;
 
 	void start()
 	{
 		running = true;
+		dirty = true;
 		Colour black(0, 0, 0);
 		draw_rect(0, 0, 800, 600, black);
 	}
@@ -51,11 +52,9 @@ namespace MainMenu {
 				break;
 			case TWO_V_TWO:
 				((Two_V_Two_Arena*)Game::arena)->start(Two_V_Two_Arena::MEDIUM);
-				Game::start();
 				break;
 			case FFA:
 				((FFA_Arena*)Game::arena)->start(FFA_Arena::LARGE);
-				Game::start();
 				break;
 			}
 			Game::start();

@@ -4,7 +4,7 @@
 
 namespace Game {
 	bool running = false;
-	uint8_t time = 0;
+	uint16_t time = 0;
 	Arena* arena = (Arena*)0x1000;
 
 	void start()

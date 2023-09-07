@@ -18,7 +18,7 @@ namespace Game {
 	// all the time while the game is running, checks if tick caused changes
 	void update();
 	extern bool running;
-	extern uint8_t time;
+	extern uint16_t time;
 	extern Arena* arena;
 
 };
