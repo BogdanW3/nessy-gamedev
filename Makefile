@@ -11,6 +11,7 @@ CL = $(CC65_DIR)bin/cl65
 DA = $(CC65_DIR)bin/da65
 
 CC = $(LLVM_MOS_DIR)bin/mos-nes-cnrom-clang
+OC = $(LLVM_MOS_DIR)bin/llvm-objcopy
 OD = $(LLVM_MOS_DIR)bin/llvm-objdump
 
 CC_NONES = g++
@@ -40,7 +41,10 @@ CONFIG  :=
 
 # Additional C compiler flags and options.
 # Default: none
-CFLAGS  = -O0 -g
+CFLAGS  = -Os
+ifneq ($(NONES),)
+	CFLAGS += -g
+endif
 
 # Additional assembler flags and options.
 # Default: none
@@ -336,6 +340,8 @@ $(PROGRAM): $(CONFIG) $(OBJECTS) $(LIBS)
 	${CC} ${LDFLAGS} -o ${@} ${OBJECTS} ${LIBS} $(LLIBS)
 #	$(DA) -v --cpu 6502 -o $(@:.nes=.asm) $@
 	$(OD) -w --source $(PROGRAM).elf > $(@).asm
+	$(OC) -O binary -j .text -j .rodata $(PROGRAM).elf $(PROGRAM).8000
+	$(OC) -O binary -j .vector $(PROGRAM).elf $(PROGRAM).fffa
 
 dump: $(PROGRAM)
 	$(OD) -w --source $(PROGRAM).elf --full-contents > $(PROGRAM).full.asm
