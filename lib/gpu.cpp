@@ -14,41 +14,42 @@
   X1, low then high
   Y1, low then high
   if applicable:
-    X2, low then high
-    Y2, low then high
+	X2, low then high
+	Y2, low then high
 */
 
 #ifdef NONES
 
-char * GPU_STATUS;
-char * GPU_RENDER_PIXEL1;
-char * GPU_RENDER_PIXEL2;
-char * GPU_RENDER_LINE1;
-char * GPU_RENDER_LINE2;
-char * GPU_RENDER_RECT1;
-char * GPU_RENDER_RECT2;
+char *GPU_STATUS;
+char *GPU_RENDER_PIXEL1;
+char *GPU_RENDER_PIXEL2;
+char *GPU_RENDER_LINE1;
+char *GPU_RENDER_LINE2;
+char *GPU_RENDER_RECT1;
+char *GPU_RENDER_RECT2;
 
 #include <raylib.h>
 
-void draw_pixel(char * const where, const int x, const int y, const Colour &colour)
+void draw_pixel(char *const where, const int x, const int y, const Colour &colour)
 {
-	DrawPixel(x, y, { colour.r, colour.g, colour.b, 0xFF });
+	DrawPixel(x, y, {colour.r, colour.g, colour.b, 0xFF});
 }
 
-void draw_shape(char * const where, const int x1, const int y1,
-									const int x2, const int y2, const Colour &colour)
+void draw_shape(char *const where, const int x1, const int y1,
+								   const int x2, const int y2, const Colour &colour)
 {
 	if (where >= GPU_RENDER_LINE1 && where <= GPU_RENDER_LINE2)
-		DrawLine(x1, y1, x2, y2, { colour.r, colour.g, colour.b, 0xFF });
+		DrawLine(x1, y1, x2, y2, {colour.r, colour.g, colour.b, 0xFF});
 	else if (where >= GPU_RENDER_RECT1 && where <= GPU_RENDER_RECT2)
-		DrawRectangle(x1, y1, x2 - x1, y2 - y1, { colour.r, colour.g, colour.b, 0xFF });
+		DrawRectangle(x1, y1, x2 - x1, y2 - y1, {colour.r, colour.g, colour.b, 0xFF});
 }
 
 #else
 
-void draw_pixel(char * const where, const int x, const int y, const Colour &colour)
+void draw_pixel(char *const where, const int x, const int y, const Colour &colour)
 {
-	while (!(*GPU_STATUS & (1 << (where - GPU_STATUS))));
+	while (!(*GPU_STATUS & (1 << (where - GPU_STATUS))))
+		;
 	*where = colour.r;
 	*where = colour.g;
 	*where = colour.b;
@@ -58,8 +59,8 @@ void draw_pixel(char * const where, const int x, const int y, const Colour &colo
 	*where = (y >> 8) & 0xFF;
 }
 
-void draw_shape(char * const where, const int x1, const int y1,
-									const int x2, const int y2, const Colour &colour)
+void draw_shape(char *const where, const int x1, const int y1,
+								   const int x2, const int y2, const Colour &colour)
 {
 	while (!(*GPU_STATUS & (1 << (where - GPU_STATUS))))
 		;
@@ -78,7 +79,7 @@ void draw_shape(char * const where, const int x1, const int y1,
 
 #endif
 
-void draw_pixel(const int x, const  int y, const Colour &colour)
+void draw_pixel(const int x, const int y, const Colour &colour)
 {
 	while (!(*GPU_STATUS & (1 << (GPU_RENDER_PIXEL1 - GPU_STATUS))) &&
 		   !(*GPU_STATUS & (1 << (GPU_RENDER_PIXEL2 - GPU_STATUS))))

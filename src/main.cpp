@@ -24,7 +24,7 @@ bool WindowShouldClose()
 
 int main()
 {
-	#ifdef NONES
+#ifdef NONES
 	// write a fake status register state, to allow all draws
 	GPU_STATUS = new char(0xFF);
 	GPU_RENDER_PIXEL1 = GPU_STATUS + 1;
@@ -34,25 +34,24 @@ int main()
 	GPU_RENDER_RECT1 = GPU_STATUS + 5;
 	GPU_RENDER_RECT2 = GPU_STATUS + 6;
 
-	Game::arena = (Arena*) malloc(800*600*3); //larger than the arena, in any case
+	Game::arena = (Arena *)malloc(800 * 600 * 3); // larger than the arena, in any case
 
-	KB::PLAYER_KB_DATA = new KB::PlayerKBData*[4];
+	KB::PLAYER_KB_DATA = new KB::PlayerKBData *[4];
 	for (int i = 0; i < 4; i++)
 		KB::PLAYER_KB_DATA[i] = new KB::PlayerKBData();
-
 
 	// set up the window, and all other graphics stuff
 	InitWindow(800, 600, "NESSY");
 	SetTargetFPS(72);
 	// set up the nmi to happen at 72Hz
-	std::thread nmi_thread([](){
+	std::thread nmi_thread([]()
+						   {
 		while(true)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(1000/72));
 			nmi();
-		}
-	});
-	#endif
+		} });
+#endif
 
 	Colour colour(0xFF, 0xFF, 0x00);
 	draw_pixel(GPU_RENDER_PIXEL1, 400, 20, colour);
@@ -62,18 +61,17 @@ int main()
 	// after this test, start the actual game logic
 
 	MainMenu::start();
-	while(!WindowShouldClose())
+	while (!WindowShouldClose())
 	{
-		#ifdef NONES
+#ifdef NONES
 		BeginDrawing();
-		#endif
+#endif
 		MainMenu::update();
 		Game::update();
-		#ifdef NONES
+#ifdef NONES
 		EndDrawing();
-		#endif
+#endif
 	}
-
 
 	return 0;
 }

@@ -3,7 +3,8 @@
 #include "../h/tile.hpp"
 #include "../lib/kb.hpp"
 
-static constexpr Colour PLAYER_COLOURS[4] = {
+static constexpr Colour PLAYER_COLOURS[4] =
+{
 	{0xFFu, 0x00u, 0x00u},
 	{0x00u, 0x00u, 0xFFu},
 	{0x00u, 0xFFu, 0x00u},
@@ -194,7 +195,7 @@ void Arena::tick()
 			}
 		}
 		if (dirty) paint(p.id, (p.position.x >> Player::position_multiplier_shift),
-								(p.position.y >> Player::position_multiplier_shift));
+							   (p.position.y >> Player::position_multiplier_shift));
 	}
 }
 

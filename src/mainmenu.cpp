@@ -9,10 +9,12 @@
 #include "../lib/kb.hpp"
 #include "../lib/gpu.hpp"
 
-namespace MainMenu {
+namespace MainMenu
+{
 	bool running = false;
 	Item activeItem = MainMenu::ONE_V_ONE;
 	bool dirty = false;
+	static uint8_t slowdown = 0;
 
 	void start()
 	{
@@ -31,38 +33,50 @@ namespace MainMenu {
 	{
 		if (!running) return;
 
-		KB::PlayerKBData* P1DATA = KB::PLAYER_KB_DATA[0];
+		KB::PlayerKBData *P1DATA = KB::PLAYER_KB_DATA[0];
 
-		if (P1DATA->UP) {
-			if (activeItem == ONE_V_ONE) activeItem = FFA;
-			else activeItem = (Item)((int)activeItem - 1);
-			dirty = true;
-		}
-		if (P1DATA->DOWN) {
-			if (activeItem == FFA) activeItem = ONE_V_ONE;
-			else activeItem = (Item)((int)activeItem + 1);
-			dirty = true;
-		}
-		if (P1DATA->START) {
-			stop();
-			switch (activeItem)
+		if (slowdown++ > 30)
+		{
+			if (P1DATA->UP)
 			{
-			case ONE_V_ONE:
-				((One_V_One_Arena*)Game::arena)->start(One_V_One_Arena::MEDIUM);
-				break;
-			case TWO_V_TWO:
-				((Two_V_Two_Arena*)Game::arena)->start(Two_V_Two_Arena::MEDIUM);
-				break;
-			case FFA:
-				((FFA_Arena*)Game::arena)->start(FFA_Arena::LARGE);
-				break;
+				if (activeItem == ONE_V_ONE)
+					activeItem = FFA;
+				else
+					activeItem = (Item)((int)activeItem - 1);
+				dirty = true;
 			}
-			Game::start();
+			if (P1DATA->DOWN)
+			{
+				if (activeItem == FFA)
+					activeItem = ONE_V_ONE;
+				else
+					activeItem = (Item)((int)activeItem + 1);
+				dirty = true;
+			}
+			if (P1DATA->START)
+			{
+				stop();
+				switch (activeItem)
+				{
+				case ONE_V_ONE:
+					((One_V_One_Arena *)Game::arena)->start(One_V_One_Arena::MEDIUM);
+					break;
+				case TWO_V_TWO:
+					((Two_V_Two_Arena *)Game::arena)->start(Two_V_Two_Arena::MEDIUM);
+					break;
+				case FFA:
+					((FFA_Arena *)Game::arena)->start(FFA_Arena::LARGE);
+					break;
+				}
+				Game::start();
+			}
+			slowdown = 0;
 		}
 	}
 
 	void update()
 	{
+		if (!running) return;
 		if (!dirty) return;
 		dirty = false;
 

@@ -8,7 +8,8 @@
 #endif
 #include "arena.hpp"
 
-namespace Game {
+namespace Game
+{
 	// when the game starts from the main menu
 	void start();
 	// when the game stops and we go back to the main menu
@@ -19,7 +20,7 @@ namespace Game {
 	void update();
 	extern bool running;
 	extern uint16_t time;
-	extern Arena* arena;
+	extern Arena *arena;
 
 };
 

@@ -13,16 +13,16 @@
 namespace KB
 {
 #ifdef NONES
-	#include <raylib.h>
-	PlayerKBData** PLAYER_KB_DATA;
-	#endif
+#include <raylib.h>
+	PlayerKBData **PLAYER_KB_DATA;
+#endif
 
 	void tick()
 	{
-	#ifdef NONES
-		//TODO: implement
-		// the player kb data structs should get the current presssed states of buttons
-		// {ALSO PUT KEYBINDS HERE IN A COMMENT}
+#ifdef NONES
+		// TODO: implement
+		//  the player kb data structs should get the current presssed states of buttons
+		//  {ALSO PUT KEYBINDS HERE IN A COMMENT}
 		PLAYER_KB_DATA[0]->A = IsKeyDown(KEY_Q);
 		PLAYER_KB_DATA[0]->B = IsKeyDown(KEY_E);
 		PLAYER_KB_DATA[0]->SELECT = IsKeyDown(KEY_R);
@@ -59,7 +59,7 @@ namespace KB
 		PLAYER_KB_DATA[3]->DOWN = false;
 		PLAYER_KB_DATA[3]->LEFT = false;
 		PLAYER_KB_DATA[3]->RIGHT = false;
-	#else
+#else
 		*KB_CONTROL = 1;
 		*KB_CONTROL = 0;
 
@@ -129,6 +129,6 @@ namespace KB
 		data = *KB_DATA2;
 		PLAYER_KB_DATA[2]->RIGHT = data & 0x01;
 		PLAYER_KB_DATA[3]->RIGHT = data & 0x02;
-	#endif
+#endif
 	}
 }

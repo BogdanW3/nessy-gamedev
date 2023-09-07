@@ -7,7 +7,8 @@
 #include <stdint.h>
 #endif
 
-class Player {
+class Player
+{
 public:
 	Player();
 	void increaseScore();
@@ -15,8 +16,9 @@ public:
 	uint8_t getScore() const;
 	uint8_t getId() const;
 	static void reset();
-	struct Vec2D {
-		constexpr Vec2D(uint16_t x, uint16_t y): x(x), y(y) {}
+	struct Vec2D
+	{
+		constexpr Vec2D(uint16_t x, uint16_t y) : x(x), y(y) {}
 		uint16_t x;
 		uint16_t y;
 	};
@@ -32,8 +34,8 @@ private:
 	Vec2D position;
 	static constexpr const uint8_t position_multiplier_shift = 5;
 
-
-	enum Direction {
+	enum Direction
+	{
 		UP,
 		DOWN,
 		LEFT,

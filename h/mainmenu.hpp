@@ -7,7 +7,8 @@
 #include <stdint.h>
 #endif
 
-namespace MainMenu {
+namespace MainMenu
+{
 	// at the very beginning, and after the game
 	void start();
 	// when the game starts
@@ -18,7 +19,8 @@ namespace MainMenu {
 	void update();
 	extern bool running;
 
-	enum Item {
+	enum Item
+	{
 		ONE_V_ONE,
 		TWO_V_TWO,
 		FFA

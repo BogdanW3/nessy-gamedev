@@ -13,8 +13,7 @@ public:
 	void paint(
 		uint8_t player_id,
 		uint8_t x,
-		uint8_t y
-	);
+		uint8_t y);
 
 	void tick();
 	void update();
@@ -27,7 +26,7 @@ protected:
 	uint8_t *tile_map = nullptr;
 	Player *players = nullptr;
 
-	const Colour* pTILE_COLOURS = nullptr;
+	const Colour *pTILE_COLOURS = nullptr;
 
 	void start(const uint8_t width, const uint8_t height, const uint8_t player_count);
 

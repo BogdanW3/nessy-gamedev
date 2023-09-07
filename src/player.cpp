@@ -2,7 +2,7 @@
 
 uint8_t Player::nextid = 0;
 
-Player::Player(): id(nextid++), score(0), position(0, 0) {}
+Player::Player() : id(nextid++), score(0), position(0, 0) {}
 
 void Player::increaseScore()
 {

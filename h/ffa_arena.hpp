@@ -1,8 +1,10 @@
 #include "arena.hpp"
 
-class FFA_Arena : public Arena {
+class FFA_Arena : public Arena
+{
 public:
-	enum Size {
+	enum Size
+	{
 		SMALL = 0,
 		MEDIUM = 1,
 		LARGE = 2,
@@ -12,6 +14,7 @@ public:
 	void start(const Size size);
 
 	static const Colour TILE_COLOURS[4];
+
 protected:
 	void update();
 };
