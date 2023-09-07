@@ -342,6 +342,9 @@ $(PROGRAM): $(CONFIG) $(OBJECTS) $(LIBS)
 	$(OD) -w --source $(PROGRAM).elf > $(@).asm
 	$(OC) -O binary -j .text -j .rodata $(PROGRAM).elf $(PROGRAM).8000
 	$(OC) -O binary -j .vector $(PROGRAM).elf $(PROGRAM).fffa
+#	it gets worse, we're adding python to the build process
+	python ./bin2mif.py $(PROGRAM).8000 $(PROGRAM).8000
+	python ./bin2mif.py $(PROGRAM).fffa $(PROGRAM).fffa
 
 dump: $(PROGRAM)
 	$(OD) -w --source $(PROGRAM).elf --full-contents > $(PROGRAM).full.asm
