@@ -52,7 +52,7 @@ ASFLAGS =
 
 # Additional linker flags and options.
 # Default: none
-LDFLAGS = -L $(LLVM_MOS_DIR)mos-platform\nes-cnrom\lib -I$(LLVM_MOS_DIR)mos-platform\nes\lib
+LDFLAGS = -L target/nessy -L $(LLVM_MOS_DIR)mos-platform\nes-cnrom\lib -I$(LLVM_MOS_DIR)mos-platform\nes\lib
 LDFLAGS += -T link.ld -Wl,--defsym,__prg_rom_size=32,--defsym,__chr_rom_size=16,--defsym,__mapper=0
 
 # Path to the directory containing C and ASM sources.
@@ -340,11 +340,11 @@ $(PROGRAM): $(CONFIG) $(OBJECTS) $(LIBS)
 	${CC} ${LDFLAGS} -o ${@} ${OBJECTS} ${LIBS} $(LLIBS)
 #	$(DA) -v --cpu 6502 -o $(@:.nes=.asm) $@
 	$(OD) -w --source $(PROGRAM).elf > $(@).asm
-	$(OC) -O binary -j .text -j .rodata $(PROGRAM).elf $(PROGRAM).8000
-	$(OC) -O binary -j .vector $(PROGRAM).elf $(PROGRAM).fffa
+	$(OC) -O binary -j .text -j .rodata $(PROGRAM).elf $(PROGRAM).8000.bin
+	$(OC) -O binary -j .vector $(PROGRAM).elf $(PROGRAM).fffa.bin
 #	it gets worse, we're adding python to the build process
-	python ./bin2mif.py $(PROGRAM).8000 $(PROGRAM).8000
-	python ./bin2mif.py $(PROGRAM).fffa $(PROGRAM).fffa
+	python ./bin2mif.py $(PROGRAM).8000.bin $(PROGRAM).8000
+	python ./bin2mif.py $(PROGRAM).fffa.bin $(PROGRAM).fffa
 
 dump: $(PROGRAM)
 	$(OD) -w --source $(PROGRAM).elf --full-contents > $(PROGRAM).full.asm
