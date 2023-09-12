@@ -345,6 +345,8 @@ $(PROGRAM): $(CONFIG) $(OBJECTS) $(LIBS)
 #	it gets worse, we're adding python to the build process
 	python ./bin2mif.py $(PROGRAM).8000.bin $(PROGRAM).8000
 	python ./bin2mif.py $(PROGRAM).fffa.bin $(PROGRAM).fffa
+	mv $(PROGRAM).8000.bin crom.bin
+	mv $(PROGRAM).fffa.bin cvec.bin
 
 dump: $(PROGRAM)
 	$(OD) -w --source $(PROGRAM).elf --full-contents > $(PROGRAM).full.asm
