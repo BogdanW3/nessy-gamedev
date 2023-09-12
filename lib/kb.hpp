@@ -8,9 +8,9 @@ namespace KB
 		bool A, B, SELECT, START, UP, DOWN, LEFT, RIGHT;
 	};
 
-	char *const KB_CONTROL =	(char *)0x4016;
-	char *const KB_DATA1 = 		(char *)0x4016;
-	char *const KB_DATA2 =		(char *)0x4017;
+	char *const KB_CONTROL =				(char *)0x4016;
+	volatile char *const KB_DATA1 = 		(char *)0x4016;
+	volatile char *const KB_DATA2 =			(char *)0x4017;
 
 	void tick();
 

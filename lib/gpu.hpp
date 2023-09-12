@@ -24,14 +24,16 @@ extern char *GPU_RENDER_LINE2;
 extern char *GPU_RENDER_RECT1;
 extern char *GPU_RENDER_RECT2;
 #else
-char *const GPU_STATUS =        (char *const)0x4000;
-char *const GPU_RENDER_PIXEL1 = (char *const)0x4001;
-char *const GPU_RENDER_PIXEL2 = (char *const)0x4002;
-char *const GPU_RENDER_LINE1 =  (char *const)0x4003;
-char *const GPU_RENDER_LINE2 =  (char *const)0x4004;
-char *const GPU_RENDER_RECT1 =  (char *const)0x4005;
-char *const GPU_RENDER_RECT2 =  (char *const)0x4006;
+volatile char *const GPU_STATUS =       (char *const)0x2000;
+char *const GPU_RENDER_PIXEL1 = 		(char *const)0x2001;
+char *const GPU_RENDER_PIXEL2 = 		(char *const)0x2002;
+char *const GPU_RENDER_LINE1 =  		(char *const)0x2003;
+char *const GPU_RENDER_LINE2 =  		(char *const)0x2004;
+char *const GPU_RENDER_RECT1 = 			(char *const)0x2005;
+char *const GPU_RENDER_RECT2 = 			(char *const)0x2006;
 #endif
+
+#define GPU_CONTROL GPU_STATUS
 
 void draw_pixel(char *const where, const int x, const int y, const Colour &colour);
 void draw_shape(char *const where, const int x1, const int y1,

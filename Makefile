@@ -10,7 +10,7 @@ $(shell if [ ! -f Makefile.user ]; then cp Makefile.user.example Makefile.user; 
 CL = $(CC65_DIR)bin/cl65
 DA = $(CC65_DIR)bin/da65
 
-CC = $(LLVM_MOS_DIR)bin/mos-nes-cnrom-clang
+CC = $(LLVM_MOS_DIR)bin/mos-clang
 OC = $(LLVM_MOS_DIR)bin/llvm-objcopy
 OD = $(LLVM_MOS_DIR)bin/llvm-objdump
 
@@ -41,7 +41,7 @@ CONFIG  :=
 
 # Additional C compiler flags and options.
 # Default: none
-CFLAGS  = -Os
+CFLAGS  = -Os -MMD -MP -MF"${@:%.o=%.d}"
 ifneq ($(NONES),)
 	CFLAGS += -g
 endif
@@ -52,8 +52,7 @@ ASFLAGS =
 
 # Additional linker flags and options.
 # Default: none
-LDFLAGS = -L target/nessy -L $(LLVM_MOS_DIR)mos-platform\nes-cnrom\lib -I$(LLVM_MOS_DIR)mos-platform\nes\lib
-LDFLAGS += -T link.ld -Wl,--defsym,__prg_rom_size=32,--defsym,__chr_rom_size=16,--defsym,__mapper=0
+LDFLAGS = -L target\nessy\lib -T link.ld -nostdlib -lcrt0
 
 # Path to the directory containing C and ASM sources.
 # Default: src
@@ -225,12 +224,6 @@ define NEWLINE
 endef
 # Note: Do not remove any of the two empty lines above !
 
-# The compiler is actually a bat script in the windows redist
-ifeq ($(OS),Windows_NT)
-  CC := $(CC).bat
-endif
-
-
 TARGETLIST := $(subst $(COMMA),$(SPACE),$(TARGETS))
 
 ifeq ($(words $(TARGETLIST)),1)
@@ -337,19 +330,19 @@ $(TARGETOBJDIR)/%.o: %.S | $(TARGETOBJDIR)
 
 $(PROGRAM): $(CONFIG) $(OBJECTS) $(LIBS)
 # $(CL) -t $(CC65TARGET) $(LDFLAGS) -o $@ $(patsubst %.cfg,-C %.cfg,$^)
-	${CC} ${LDFLAGS} -o ${@} ${OBJECTS} ${LIBS} $(LLIBS)
+	${CC} ${LDFLAGS} -o $@ ${OBJECTS} ${LIBS} $(LLIBS)
 #	$(DA) -v --cpu 6502 -o $(@:.nes=.asm) $@
-	$(OD) -w --source $(PROGRAM).elf > $(@).asm
-	$(OC) -O binary -j .text -j .rodata $(PROGRAM).elf $(PROGRAM).8000.bin
-	$(OC) -O binary -j .vector $(PROGRAM).elf $(PROGRAM).fffa.bin
+	$(OD) -w --source $@ > $@.asm
+	$(OC) -O binary -j .text -j .rodata $@ $@.8000.bin
+	$(OC) -O binary -j .vector $@ $@.fffa.bin
 #	it gets worse, we're adding python to the build process
-	python ./bin2mif.py $(PROGRAM).8000.bin $(PROGRAM).8000
-	python ./bin2mif.py $(PROGRAM).fffa.bin $(PROGRAM).fffa
-	mv $(PROGRAM).8000.bin crom.bin
-	mv $(PROGRAM).fffa.bin cvec.bin
+	python ./bin2mif.py $@.8000.bin $@.8000
+	python ./bin2mif.py $@.fffa.bin $@.fffa
+	mv $@.8000.bin crom.bin
+	mv $@.fffa.bin cvec.bin
 
 dump: $(PROGRAM)
-	$(OD) -w --source $(PROGRAM).elf --full-contents > $(PROGRAM).full.asm
+	$(OD) -w --source $< --full-contents > $<.full.asm
 
 test: $(PROGRAM)
 	$(PREEMUCMD)
