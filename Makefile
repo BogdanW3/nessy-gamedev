@@ -52,7 +52,7 @@ ASFLAGS =
 
 # Additional linker flags and options.
 # Default: none
-LDFLAGS = -L target\nessy\lib -T link.ld -nostdlib -lcrt0
+LDFLAGS = -L target/nessy/lib -T link.ld -nostdlib -lcrt0
 
 # Path to the directory containing C and ASM sources.
 # Default: src
