@@ -30,12 +30,12 @@ char *GPU_RENDER_RECT2;
 
 #include <raylib.h>
 
-void draw_pixel(char *const where, const int x, const int y, const Colour &colour)
+void draw_pixel(volatile char *const where, const int x, const int y, const Colour &colour)
 {
 	DrawPixel(x, y, {colour.r, colour.g, colour.b, 0xFF});
 }
 
-void draw_shape(char *const where, const int x1, const int y1,
+void draw_shape(volatile char *const where, const int x1, const int y1,
 								   const int x2, const int y2, const Colour &colour)
 {
 	if (where >= GPU_RENDER_LINE1 && where <= GPU_RENDER_LINE2)
@@ -46,7 +46,7 @@ void draw_shape(char *const where, const int x1, const int y1,
 
 #else
 
-void draw_pixel(char *const where, const int x, const int y, const Colour &colour)
+void draw_pixel(volatile char *const where, const int x, const int y, const Colour &colour)
 {
 	while (!(*GPU_STATUS & (1 << (where - GPU_STATUS))))
 		;
@@ -59,7 +59,7 @@ void draw_pixel(char *const where, const int x, const int y, const Colour &colou
 	*where = (y >> 8) & 0xFF;
 }
 
-void draw_shape(char *const where, const int x1, const int y1,
+void draw_shape(volatile char *const where, const int x1, const int y1,
 								   const int x2, const int y2, const Colour &colour)
 {
 	while (!(*GPU_STATUS & (1 << (where - GPU_STATUS))))
