@@ -41,10 +41,7 @@ CONFIG  :=
 
 # Additional C compiler flags and options.
 # Default: none
-CFLAGS  = -Os -MMD -MP -MF"${@:%.o=%.d}"
-ifneq ($(NONES),)
-	CFLAGS += -g
-endif
+CFLAGS  = -Os -MMD -MP -MF"${@:%.o=%.d}" -g
 
 # Additional assembler flags and options.
 # Default: none

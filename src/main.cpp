@@ -54,10 +54,10 @@ int main()
 #endif
 
 	*GPU_CONTROL = 0x80; // enable NMI
-	Colour colour(0xFF, 0xFF, 0x00);
-	draw_pixel(GPU_RENDER_PIXEL1, 400, 20, colour);
-	draw_shape(GPU_RENDER_LINE2, 10, 20, 200, 100, colour);
-	draw_rect(PRIO_HIGH, 10, 20, 200, 100, colour);
+	//Colour colour(0xFF, 0xFF, 0x00);
+	//draw_pixel(GPU_RENDER_PIXEL1, 400, 20, colour);
+	//draw_shape(GPU_RENDER_LINE2, 10, 20, 200, 100, colour);
+	//draw_rect(PRIO_HIGH, 10, 20, 200, 100, colour);
 
 	// after this test, start the actual game logic
 
