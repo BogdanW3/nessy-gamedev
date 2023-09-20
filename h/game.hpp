@@ -20,7 +20,7 @@ namespace Game
 	void update();
 	extern bool running;
 	extern uint16_t time;
-	extern Arena *arena;
+	extern Arena * const arena;
 
 };
 

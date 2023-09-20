@@ -6,7 +6,7 @@ namespace Game
 {
 	bool running = false;
 	uint16_t time = 0;
-	Arena *arena = (Arena *)0x1000;
+	Arena * const arena = (Arena * const)0x1000;
 
 	void start()
 	{
@@ -23,16 +23,16 @@ namespace Game
 		if (!running) return;
 		time++;
 		arena->tick();
-		if (time == 72 * 60)
-		{
-			stop();
-			MainMenu::start();
-		}
 	}
 
 	void update()
 	{
 		if (!running) return;
 		arena->update();
+		if (time == 72 * 60)
+		{
+			stop();
+			MainMenu::start();
+		}
 	}
 }
