@@ -11,16 +11,18 @@ static constexpr Colour PLAYER_COLOURS[4] =
 	{0xFFu, 0xFFu, 0x00u}
 };
 
+const Colour Arena::TILE_COLOURS[2] = {{0x99, 0x00, 0x00}, {0x00, 0x00, 0x99}};
+
 constexpr const Player::Vec2D Arena::getScalingFactor() const
 {
 	return Player::Vec2D(800 / width, 600 / height);
 }
 
-void Arena::start(const uint8_t width, const uint8_t height, const uint8_t player_count)
+void Arena::start()
 {
-	this->width = width;
-	this->height = height;
-	this->player_count = player_count;
+	this->width = 20;
+	this->height = 15;
+	this->player_count = 2;
 	dirty = true;
 	players = (Player *)(this + 1);
 	for (uint8_t i = 0; i < player_count; i++)
@@ -82,7 +84,7 @@ void Arena::drawTile(uint8_t x, uint8_t y) const
 	if (tile & TILE_WALL_MASK)
 		draw_rect(x * scaling.x, y * scaling.y, (x + 1) * scaling.x, (y + 1) * scaling.y, {0x60u, 0x60u, 0x60u});
 	else if (tile & TILE_TAKEN_MASK)
-		draw_rect(x * scaling.x, y * scaling.y, (x + 1) * scaling.x, (y + 1) * scaling.y, pTILE_COLOURS[tile & TILE_OWNER_MASK]);
+		draw_rect(x * scaling.x, y * scaling.y, (x + 1) * scaling.x, (y + 1) * scaling.y, TILE_COLOURS[tile & TILE_OWNER_MASK]);
 	else
 		draw_rect(x * scaling.x, y * scaling.y, (x + 1) * scaling.x, (y + 1) * scaling.y, {0x00u, 0x00u, 0x00u});
 }
@@ -107,7 +109,7 @@ bool inline Arena::isPaintable(uint8_t x, uint8_t y) const
 	return !(tile & TILE_WALL_MASK);
 }
 
-void Arena::paint(uint8_t player_id, uint8_t x, uint8_t y)
+void Arena::tile_mark(uint8_t player_id, uint8_t x, uint8_t y)
 {
 	if (player_id >= player_count) return;
 	if (!isPaintable(x, y)) return;
@@ -141,7 +143,7 @@ void Arena::tick()
 			Player::Vec2D aim = p.getAim();
 			while (aim.x || aim.y)
 			{
-				paint(p.id, (p.position.x >> Player::position_multiplier_shift) + aim.x,
+				tile_mark(p.id, (p.position.x >> Player::position_multiplier_shift) + aim.x,
 					  (p.position.y >> Player::position_multiplier_shift) + aim.y);
 				if (aim.x > 0x8000)
 					aim.x++;
@@ -194,7 +196,7 @@ void Arena::tick()
 				dirty = true;
 			}
 		}
-		if (dirty) paint(p.id, (p.position.x >> Player::position_multiplier_shift),
+		if (dirty) tile_mark(p.id, (p.position.x >> Player::position_multiplier_shift),
 							   (p.position.y >> Player::position_multiplier_shift));
 	}
 }

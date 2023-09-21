@@ -10,15 +10,18 @@ public:
 	constexpr inline uint8_t getWidth() const;
 	constexpr inline uint8_t getHeight() const;
 	inline bool isPaintable(uint8_t x, uint8_t y) const;
-	void paint(
+	void tick();
+	void update();
+
+	void tile_mark(
 		uint8_t player_id,
 		uint8_t x,
 		uint8_t y);
 
-	void tick();
-	void update();
 
-protected:
+	void start();
+
+private:
 	uint8_t height = 0;
 	uint8_t width = 0;
 	uint8_t player_count = 0;
@@ -26,10 +29,7 @@ protected:
 	uint8_t *tile_map = nullptr;
 	Player *players = nullptr;
 
-	const Colour *pTILE_COLOURS = nullptr;
-
-	void start(const uint8_t width, const uint8_t height, const uint8_t player_count);
-
+	static const Colour TILE_COLOURS[2];
 	void initTileMap();
 	void initTileMapWalls();
 	void initPlayers();

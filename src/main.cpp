@@ -1,6 +1,5 @@
 #include "../lib/gpu.hpp"
 
-#include "../h/mainmenu.hpp"
 #include "../h/game.hpp"
 
 #ifdef NONES
@@ -10,10 +9,6 @@
 
 #include "../lib/nmi.hpp"
 #include "../lib/kb.hpp"
-
-#include "../h/1v1_arena.hpp"
-#include "../h/2v2_arena.hpp"
-#include "../h/ffa_arena.hpp"
 
 #else
 bool WindowShouldClose()
@@ -34,8 +29,6 @@ int main()
 	GPU_RENDER_RECT1 = GPU_STATUS + 5;
 	GPU_RENDER_RECT2 = GPU_STATUS + 6;
 
-	Game::arena = (Arena *)malloc(800 * 600 * 3); // larger than the arena, in any case
-
 	KB::PLAYER_KB_DATA = new KB::PlayerKBData *[4];
 	for (int i = 0; i < 4; i++)
 		KB::PLAYER_KB_DATA[i] = new KB::PlayerKBData();
@@ -53,7 +46,7 @@ int main()
 		} });
 #endif
 
-	*GPU_CONTROL = 0x80; // enable NMI
+	*GPU_CONTROL = 0xFE; // enable NMI
 	//Colour colour(0xFF, 0xFF, 0x00);
 	//draw_pixel(GPU_RENDER_PIXEL1, 400, 20, colour);
 	//draw_shape(GPU_RENDER_LINE2, 10, 20, 200, 100, colour);
@@ -61,13 +54,14 @@ int main()
 
 	// after this test, start the actual game logic
 
-	MainMenu::start();
+	Game::start();
+	Game::arena->start();
 	while (!WindowShouldClose())
 	{
 #ifdef NONES
 		BeginDrawing();
 #endif
-		MainMenu::update();
+		//MainMenu::update();
 		Game::update();
 #ifdef NONES
 		EndDrawing();
