@@ -42,6 +42,7 @@ void Arena::start()
 	tile_map = (uint8_t *)(&(players[player_count]) + 1);
 	initTileMap();
 	initPlayers();
+	draw_rect(PRIO_HIGH, 799, 0, 800, 599, Colour(0x60u, 0x60u, 0x60u));
 }
 
 void Arena::initTileMap()
@@ -63,7 +64,7 @@ void Arena::initTileMapWalls()
 	for (uint8_t i = 0; i < width; i++)
 	{
 		tile_map[i + width * 0] = TILE_WALL;
-		tile_map[i + width * height - 1] = TILE_WALL;
+		tile_map[i + width * (height - 1)] = TILE_WALL;
 	}
 
 	for (uint8_t i = 0; i < height; i++)
@@ -92,7 +93,7 @@ void Arena::drawTile(uint8_t x, uint8_t y) const
 	const Player::Vec2D scaling = getScalingFactor();
 
 	draw_rect(PRIO_HIGH, x * scaling.x, y * scaling.y, (x + 1) * scaling.x - 1, (y + 1) * scaling.y - 1,
-	(tile & TILE_WALL_MASK) ? Colour(0x60u, 0x60u, 0x60u) :
+	(tile & TILE_WALL_MASK) ? Colour(0xFFu, 0xFFu, 0xFFu) :
 	(tile & TILE_TAKEN_MASK ? TILE_COLOURS[tile & TILE_OWNER_MASK] :
 							  Colour(0x00u, 0x00u, 0x00u)));
 	tile_map[x + width * y] &= ~TILE_DIRTY_MASK;
