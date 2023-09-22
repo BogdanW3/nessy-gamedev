@@ -1,11 +1,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#ifndef NONES
-#include "../lib/stdint.hpp"
-#else
-#include <stdint.h>
-#endif
+#include "vec2d.hpp"
 
 class Player
 {
@@ -14,21 +10,12 @@ public:
 	void increaseScore();
 	void decreaseScore();
 	uint8_t getScore() const;
-	uint8_t getId() const;
+	uint8_t getID() const;
 	static void reset();
-	struct Vec2D
-	{
-		constexpr Vec2D(uint16_t x, uint16_t y) : x(x), y(y) {}
-		uint16_t x;
-		uint16_t y;
-	};
+
 
 	Vec2D getAim() const;
 
-private:
-	static uint8_t nextid;
-	uint8_t id;
-	uint8_t score;
 	// the player's position is 2^4 (or 5?) times larger than tile position,
 	// for slower movement
 	Vec2D position;
@@ -44,7 +31,10 @@ private:
 
 	Direction facing = UP;
 
-	friend class Arena;
+private:
+	static uint8_t nextid;
+	uint8_t id;
+	uint8_t score;
 };
 
 #endif // !PLAYER_HPP

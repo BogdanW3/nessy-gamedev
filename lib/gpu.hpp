@@ -1,19 +1,8 @@
 #ifndef GPU_HPP
 #define GPU_HPP
 
-#ifndef NONES
-#include "stdint.hpp"
-#else
-#include <stdint.h>
-#endif
 
-struct Colour
-{
-	constexpr Colour(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
-	uint8_t r;
-	uint8_t g;
-	uint8_t b;
-};
+#include "colour.hpp"
 
 #ifdef NONES
 extern char *GPU_STATUS;

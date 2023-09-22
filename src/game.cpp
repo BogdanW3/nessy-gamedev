@@ -7,11 +7,6 @@ namespace Game
 {
 	bool running = false;
 	uint16_t time = 0;
-#ifdef NONES
-	Arena *arena = nullptr;
-#else
-	Arena * const arena = (Arena * const)0x1000;
-#endif
 
 	void start()
 	{
@@ -28,18 +23,18 @@ namespace Game
 	{
 		if (!running) return;
 		time++;
-		arena->tick();
+		Arena::tick();
 	}
 
 	void update()
 	{
 		if (!running) return;
-		arena->update();
+		Arena::update();
 		if (time >= 72 * 60)
 		{
 			//stop();
 			//MainMenu::start();
-			arena->start();
+			Arena::start();
 		}
 	}
 }

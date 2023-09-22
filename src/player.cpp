@@ -25,7 +25,7 @@ uint8_t Player::getScore() const
 	return score;
 }
 
-uint8_t Player::getId() const
+uint8_t Player::getID() const
 {
 	return id;
 }
@@ -35,7 +35,7 @@ void Player::reset()
 	nextid = 0;
 }
 
-Player::Vec2D Player::getAim() const
+Vec2D Player::getAim() const
 {
 	Vec2D aim(0, 0);
 	switch (facing)

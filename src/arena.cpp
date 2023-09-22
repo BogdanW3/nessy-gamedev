@@ -3,7 +3,10 @@
 #include "../h/tile.hpp"
 #include "../lib/kb.hpp"
 
-static constexpr Colour PLAYER_COLOURS[4] =
+namespace Arena {
+
+
+static constexpr const Colour PLAYER_COLOURS[4] =
 {
 	{0xFFu, 0x00u, 0x00u},
 	{0x00u, 0x00u, 0xFFu},
@@ -12,7 +15,7 @@ static constexpr Colour PLAYER_COLOURS[4] =
 };
 
 
-static constexpr Player::Vec2D PLAYER_STARTPOS[4] =
+static constexpr const Vec2D PLAYER_STARTPOS[4] =
 {
 	{1, 1},
 	{18, 13},
@@ -20,119 +23,105 @@ static constexpr Player::Vec2D PLAYER_STARTPOS[4] =
 	{18, 1}
 };
 
-const Colour Arena::TILE_COLOURS[2] = {{0x99, 0x00, 0x00}, {0x00, 0x00, 0x99}};
+uint8_t tile_map[WIDTH_TILES][HEIGHT_TILES];
+Player players[2];
+bool dirty;
 
-constexpr const Player::Vec2D Arena::getScalingFactor() const
-{
-	return Player::Vec2D(800 / width, 600 / height);
-}
-
-void Arena::start()
+void start()
 {
 	Player::reset();
-	this->width = 20;
-	this->height = 15;
-	this->player_count = 2;
 	dirty = true;
-	players = (Player *)(this + 1);
-	for (uint8_t i = 0; i < player_count; i++)
+	for (uint8_t i = 0; i < PLAYER_COUNT; i++)
 	{
 		players[i].start();
 	}
-	tile_map = (uint8_t *)(&(players[player_count]) + 1);
 	initTileMap();
 	initPlayers();
 	draw_rect(PRIO_HIGH, 799, 0, 800, 599, Colour(0x60u, 0x60u, 0x60u));
 }
 
-void Arena::initTileMap()
+void initTileMap()
 {
-	for (uint8_t i = 1; i < width - 1; i++)
+	for (uint8_t i = 1; i < WIDTH_TILES - 1; i++)
 	{
-		for (uint8_t j = 1; j < height - 1; j++)
+		for (uint8_t j = 1; j < HEIGHT_TILES - 1; j++)
 		{
-			tile_map[i + width * j] = TILE_DIRTY_MASK;
+			tile_map[i][j] = TILE_DIRTY_MASK;
 		}
 	}
 
 	initTileMapWalls();
 }
-void Arena::initTileMapWalls()
+void initTileMapWalls()
 {
 	uint8_t TILE_WALL = TILE_WALL_MASK | TILE_DIRTY_MASK;
 
-	for (uint8_t i = 0; i < width; i++)
+	for (uint8_t i = 0; i < WIDTH_TILES; i++)
 	{
-		tile_map[i + width * 0] = TILE_WALL;
-		tile_map[i + width * (height - 1)] = TILE_WALL;
+		tile_map[i][0] = TILE_WALL;
+		tile_map[i][HEIGHT_TILES - 1] = TILE_WALL;
 	}
 
-	for (uint8_t i = 0; i < height; i++)
+	for (uint8_t i = 0; i < HEIGHT_TILES; i++)
 	{
-		tile_map[0 + width * i] = TILE_WALL;
-		tile_map[width - 1 + width * i] = TILE_WALL;
+		tile_map[0][i] = TILE_WALL;
+		tile_map[WIDTH_TILES - 1][i] = TILE_WALL;
 	}
 }
 
-void Arena::initPlayers()
+void initPlayers()
 {
-	for (uint8_t i = 0; i < player_count; i++)
+	for (uint8_t i = 0; i < PLAYER_COUNT; i++)
 	{
 		Player &p = players[i];
 		p.position = PLAYER_STARTPOS[i];
-		tile_map[p.position.x + width * p.position.y] = TILE_TAKEN_MASK | TILE_DIRTY_MASK | p.id;
+		tile_map[p.position.x][p.position.y] = TILE_TAKEN_MASK | TILE_DIRTY_MASK | p.getID();
 		p.position.x <<= Player::position_multiplier_shift;
 		p.position.y <<= Player::position_multiplier_shift;
 	}
 }
 
-void Arena::drawTile(uint8_t x, uint8_t y) const
+void drawTile(uint8_t x, uint8_t y)
 {
-	uint8_t tile = tile_map[x + width * y];
+	uint8_t tile = tile_map[x][y];
 	if (!(tile & TILE_DIRTY_MASK)) return;
-	const Player::Vec2D scaling = getScalingFactor();
+	const constexpr Vec2D scale = SCALING_FACTOR;
 
+<<<<<<< HEAD
 	draw_rect(PRIO_HIGH, x * scaling.x, y * scaling.y, (x + 1) * scaling.x - 1, (y + 1) * scaling.y - 1,
+=======
+	draw_rect(PRIO_HIGH, x * scale.x, y * scale.y, (x + 1) * scale.x - 1, (y + 1) * scale.y - 1,
+>>>>>>> 4a9fc7e (Prettify)
 	(tile & TILE_WALL_MASK) ? Colour(0xFFu, 0xFFu, 0xFFu) :
 	(tile & TILE_TAKEN_MASK ? TILE_COLOURS[tile & TILE_OWNER_MASK] :
 							  Colour(0x00u, 0x00u, 0x00u)));
-	tile_map[x + width * y] &= ~TILE_DIRTY_MASK;
+	tile_map[x][y] &= ~TILE_DIRTY_MASK;
 }
 
-constexpr inline uint8_t Arena::getWidth() const
+bool inline isFloor(uint8_t x, uint8_t y)
 {
-	return width;
-}
-
-constexpr inline uint8_t Arena::getHeight() const
-{
-	return height;
-}
-
-bool inline Arena::isPaintable(uint8_t x, uint8_t y) const
-{
-	if (x >= width)
+	if (x >= WIDTH_TILES)
 		return false;
-	if (y >= height)
+	if (y >= HEIGHT_TILES)
 		return false;
-	uint8_t tile = tile_map[x + width * y];
+	uint8_t tile = tile_map[x][y];
 	return !(tile & TILE_WALL_MASK);
 }
 
-void Arena::tile_set_dirty(uint8_t x, uint8_t y)
+void setDirty(uint8_t x, uint8_t y)
 {
-	if (x >= width)
+	if (x >= WIDTH_TILES)
 		return;
-	if (y >= height)
+	if (y >= HEIGHT_TILES)
 		return;
-	tile_map[x + width * y] |= TILE_DIRTY_MASK;
+	tile_map[x][y] |= TILE_DIRTY_MASK;
 }
 
-void Arena::tile_mark(uint8_t player_id, uint8_t x, uint8_t y)
+void takeFloor(uint8_t player_id, uint8_t x, uint8_t y)
 {
-	if (player_id >= player_count) return;
-	if (!isPaintable(x, y)) return;
-	uint8_t &tile = tile_map[x + width * y];
+	if (player_id >= PLAYER_COUNT) return;
+	if (!isFloor(x, y)) return;
+	uint8_t &tile = tile_map[x][y];
 
 	// Decrease score of last owner (if they exists)
 	if (tile & TILE_TAKEN_MASK)
@@ -151,18 +140,18 @@ void Arena::tile_mark(uint8_t player_id, uint8_t x, uint8_t y)
 	players[player_id].increaseScore();
 }
 
-void Arena::tick()
+void tick()
 {
-	for (uint8_t i = 0; i < player_count; i++)
+	for (uint8_t i = 0; i < PLAYER_COUNT; i++)
 	{
 		Player &p = players[i];
 		volatile KB::PlayerKBData &data = KB::PLAYER_KB_DATA[i];
 		if (data.A)
 		{
-			Player::Vec2D aim = p.getAim();
+			Vec2D aim = p.getAim();
 			while (aim.x || aim.y)
 			{
-				tile_mark(p.id, (p.position.x >> Player::position_multiplier_shift) + aim.x,
+				takeFloor(p.getID(), (p.position.x >> Player::position_multiplier_shift) + aim.x,
 					  (p.position.y >> Player::position_multiplier_shift) + aim.y);
 				if (aim.x > 0x8000)
 					aim.x++;
@@ -177,7 +166,7 @@ void Arena::tick()
 		}
 		if (data.UP)
 		{
-			if (isPaintable((p.position.x >> Player::position_multiplier_shift),
+			if (isFloor((p.position.x >> Player::position_multiplier_shift),
 							((p.position.y - 1) >> Player::position_multiplier_shift)))
 			{
 				p.position.y--;
@@ -187,7 +176,7 @@ void Arena::tick()
 		}
 		if (data.DOWN)
 		{
-			if (isPaintable((p.position.x >> Player::position_multiplier_shift),
+			if (isFloor((p.position.x >> Player::position_multiplier_shift),
 							((p.position.y + 1) >> Player::position_multiplier_shift)))
 			{
 				p.position.y++;
@@ -197,7 +186,7 @@ void Arena::tick()
 		}
 		if (data.LEFT)
 		{
-			if (isPaintable(((p.position.x - 1) >> Player::position_multiplier_shift),
+			if (isFloor(((p.position.x - 1) >> Player::position_multiplier_shift),
 							(p.position.y >> Player::position_multiplier_shift)))
 			{
 				p.position.x--;
@@ -207,7 +196,7 @@ void Arena::tick()
 		}
 		if (data.RIGHT)
 		{
-			if (isPaintable(((p.position.x + 1) >> Player::position_multiplier_shift),
+			if (isFloor(((p.position.x + 1) >> Player::position_multiplier_shift),
 							(p.position.y >> Player::position_multiplier_shift)))
 			{
 				p.position.x++;
@@ -221,40 +210,40 @@ void Arena::tick()
 			uint8_t y = (p.position.y >> Player::position_multiplier_shift);
 			for (int i = -1; i < 2; i++)
 				for (int j = -1; j < 2; j++)
-					tile_set_dirty(x + i, y + j);
-			tile_mark(p.id, x, y);
+					setDirty(x + i, y + j);
+			takeFloor(p.getID(), x, y);
 		}
 	}
 }
 
-void Arena::update()
+void update()
 {
 	if (dirty)
 	{
-		for (uint8_t i = 0; i < width; i++)
+		for (uint8_t i = 0; i < WIDTH_TILES; i++)
 		{
-			for (uint8_t j = 0; j < height; j++)
+			for (uint8_t j = 0; j < HEIGHT_TILES; j++)
 			{
 				drawTile(i, j);
 			}
 		}
 		dirty = false;
-		Player::Vec2D scaling = getScalingFactor();
-		for (uint8_t i = 0; i < player_count; i++)
+		Vec2D scale = SCALING_FACTOR;
+		for (uint8_t i = 0; i < PLAYER_COUNT; i++)
 		{
 			Player &p = players[i];
-			draw_rect(PRIO_LOW, ((p.position.x * scaling.x) >> Player::position_multiplier_shift) - 8,
-					  ((p.position.y * scaling.y) >> Player::position_multiplier_shift) - 8,
-					  ((p.position.x * scaling.x) >> Player::position_multiplier_shift) + 6,
-					  ((p.position.y * scaling.y) >> Player::position_multiplier_shift) + 6,
-					  PLAYER_COLOURS[p.id]);
+			draw_rect(PRIO_LOW, ((p.position.x * scale.x) >> Player::position_multiplier_shift) - 8,
+					  ((p.position.y * scale.y) >> Player::position_multiplier_shift) - 8,
+					  ((p.position.x * scale.x) >> Player::position_multiplier_shift) + 6,
+					  ((p.position.y * scale.y) >> Player::position_multiplier_shift) + 6,
+					  PLAYER_COLOURS[p.getID()]);
 		}
 	}
 }
 /*
-Arena::~Arena()
+~Arena()
 {
-	for(uint8_t i = 0; i < width; i++)
+	for(uint8_t i = 0; i < WIDTH_TILES; i++)
 	{
 		delete[] tile_map[i];
 	}
@@ -262,3 +251,4 @@ Arena::~Arena()
 
 	delete[] players;
 }*/
+}

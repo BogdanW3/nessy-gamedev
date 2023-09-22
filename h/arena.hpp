@@ -2,43 +2,40 @@
 #define ARENA_HPP
 
 #include "player.hpp"
-#include "../lib/gpu.hpp"
+#include "../lib/colour.hpp"
 
-class Arena
+namespace Arena
 {
-public:
-	constexpr inline uint8_t getWidth() const;
-	constexpr inline uint8_t getHeight() const;
-	inline bool isPaintable(uint8_t x, uint8_t y) const;
+	static constexpr const uint16_t WIDTH = 800;
+	static constexpr const uint16_t HEIGHT = 600;
+	static constexpr const uint8_t WIDTH_TILES = 20;
+	static constexpr const uint8_t HEIGHT_TILES = 15;
+	static constexpr const uint8_t PLAYER_COUNT = 2;
+	static constexpr const Vec2D SCALING_FACTOR = Vec2D { WIDTH/WIDTH_TILES, HEIGHT/HEIGHT_TILES };
+
+	extern uint8_t tile_map[WIDTH_TILES][HEIGHT_TILES];
+	extern Player players[2];
+	extern bool dirty;
+
+	inline bool isFloor(uint8_t x, uint8_t y);
 	void tick();
 	void update();
 
-	void tile_mark(
+	void takeFloor(
 		uint8_t player_id,
 		uint8_t x,
 		uint8_t y);
-	void tile_set_dirty(
+	void setDirty(
 		uint8_t x,
 		uint8_t y);
 
 	void start();
 
-private:
-	uint8_t height = 0;
-	uint8_t width = 0;
-	uint8_t player_count = 0;
-	bool dirty = false;
-	uint8_t *tile_map = nullptr;
-	Player *players = nullptr;
-
-	static const Colour TILE_COLOURS[2];
 	void initTileMap();
 	void initTileMapWalls();
 	void initPlayers();
 
-	void drawTile(uint8_t x, uint8_t y) const;
-
-	constexpr const Player::Vec2D getScalingFactor() const;
+	void drawTile(uint8_t x, uint8_t y);
 };
 
 #endif // !ARENA_HPP

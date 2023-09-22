@@ -58,7 +58,7 @@ int main()
 #ifdef NONES
 	if (Game::arena == nullptr) Game::arena = (Arena *)malloc(800 * 600 * 32);
 #endif
-	Game::arena->start();
+	Arena::start();
 	Game::start();
 	while (!WindowShouldClose())
 	{
