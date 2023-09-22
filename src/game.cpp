@@ -15,10 +15,8 @@ namespace Game
 
 	void start()
 	{
-#ifdef NONES
-		if (arena == nullptr) arena = (Arena*)malloc(800*600*32);
-#endif
 		running = true;
+		time = 0;
 	}
 
 	void stop()

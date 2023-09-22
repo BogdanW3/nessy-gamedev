@@ -17,7 +17,9 @@ public:
 		uint8_t player_id,
 		uint8_t x,
 		uint8_t y);
-
+	void tile_set_dirty(
+		uint8_t x,
+		uint8_t y);
 
 	void start();
 

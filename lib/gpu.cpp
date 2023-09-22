@@ -53,10 +53,10 @@ void draw_pixel(volatile char *const where, const int x, const int y, const Colo
 	*where = colour.r;
 	*where = colour.g;
 	*where = colour.b;
-	*where = x & 0xFF;
-	*where = (x >> 8) & 0xFF;
-	*where = y & 0xFF;
-	*where = (y >> 8) & 0xFF;
+	*where = (x > 800 ? 800 & 0xFF : x & 0xFF);
+	*where = (x > 800 ? (800 >> 8) & 0xFF : (x >> 8) & 0xFF);
+	*where = (y > 600 ? 600 & 0xFF : y & 0xFF);
+	*where = (y > 600 ? (600 >> 8) & 0xFF : (y >> 8) & 0xFF);
 }
 
 void draw_shape(volatile char *const where, const int x1, const int y1,
@@ -67,14 +67,14 @@ void draw_shape(volatile char *const where, const int x1, const int y1,
 	*where = colour.r;
 	*where = colour.g;
 	*where = colour.b;
-	*where = x1 & 0xFF;
-	*where = (x1 >> 8) & 0xFF;
-	*where = y1 & 0xFF;
-	*where = (y1 >> 8) & 0xFF;
-	*where = x2 & 0xFF;
-	*where = (x2 >> 8) & 0xFF;
-	*where = y2 & 0xFF;
-	*where = (y2 >> 8) & 0xFF;
+	*where = (x1 > 800 ? 800 & 0xFF : x1 & 0xFF);
+	*where = (x1 > 800 ? (800 >> 8) & 0xFF : (x1 >> 8) & 0xFF);
+	*where = (y1 > 600 ? 600 & 0xFF : y1 & 0xFF);
+	*where = (y1 > 600 ? (600 >> 8) & 0xFF : (y1 >> 8) & 0xFF);
+	*where = (x2 > 800 ? 800 & 0xFF : x2 & 0xFF);
+	*where = (x2 > 800 ? (800 >> 8) & 0xFF : (x2 >> 8) & 0xFF);
+	*where = (y2 > 600 ? 600 & 0xFF : y2 & 0xFF);
+	*where = (y2 > 600 ? (600 >> 8) & 0xFF : (y2 >> 8) & 0xFF);
 }
 
 #endif

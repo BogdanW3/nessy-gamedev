@@ -15,9 +15,9 @@ namespace KB
 	void tick();
 
 #ifdef NONES
-	extern PlayerKBData **PLAYER_KB_DATA;
+	extern PlayerKBData *PLAYER_KB_DATA;
 #else
-	PlayerKBData **const PLAYER_KB_DATA = (PlayerKBData **)0x1F00;
+	extern volatile PlayerKBData PLAYER_KB_DATA[4];
 #endif
 }; // namespace KB
 

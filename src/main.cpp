@@ -1,6 +1,10 @@
 #include "../lib/gpu.hpp"
 
 #include "../h/game.hpp"
+#include "../lib/kb.hpp"
+
+#include "../lib/gpu.hpp"
+
 
 #ifdef NONES
 #include <raylib.h>
@@ -29,10 +33,7 @@ int main()
 	GPU_RENDER_RECT1 = GPU_STATUS + 5;
 	GPU_RENDER_RECT2 = GPU_STATUS + 6;
 
-	KB::PLAYER_KB_DATA = new KB::PlayerKBData *[4];
-	for (int i = 0; i < 4; i++)
-		KB::PLAYER_KB_DATA[i] = new KB::PlayerKBData();
-
+	KB::PLAYER_KB_DATA = new KB::PlayerKBData[4];
 	// set up the window, and all other graphics stuff
 	InitWindow(800, 600, "NESSY");
 	SetTargetFPS(72);
@@ -54,8 +55,11 @@ int main()
 
 	// after this test, start the actual game logic
 
-	Game::start();
+#ifdef NONES
+	if (Game::arena == nullptr) Game::arena = (Arena *)malloc(800 * 600 * 32);
+#endif
 	Game::arena->start();
+	Game::start();
 	while (!WindowShouldClose())
 	{
 #ifdef NONES

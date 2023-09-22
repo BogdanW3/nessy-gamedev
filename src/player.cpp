@@ -2,7 +2,13 @@
 
 uint8_t Player::nextid = 0;
 
-Player::Player() : id(nextid++), score(0), position(0, 0) {}
+void Player::start()
+{
+	id = nextid++;
+	score = 0;
+	position = Vec2D(0, 0);
+	facing = UP;
+}
 
 void Player::increaseScore()
 {

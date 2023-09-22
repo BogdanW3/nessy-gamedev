@@ -10,7 +10,7 @@
 class Player
 {
 public:
-	Player();
+	void start();
 	void increaseScore();
 	void decreaseScore();
 	uint8_t getScore() const;
