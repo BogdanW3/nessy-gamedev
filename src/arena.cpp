@@ -17,27 +17,87 @@ static constexpr const Colour PLAYER_COLOURS[4] =
 
 static constexpr const Vec2D PLAYER_STARTPOS[4] =
 {
-	{1, 1},
+	{2, 2},
 	{18, 13},
 	{1, 13},
-	{18, 1}
+	{18, 2}
 };
 
 uint8_t tile_map[WIDTH_TILES][HEIGHT_TILES];
-Player players[2];
+Player players[PLAYER_COUNT];
+uint8_t timeoutKilled[PLAYER_COUNT];
 bool dirty;
 
-void start()
+inline Colour getTileColour(uint8_t tile)
 {
-	Player::reset();
-	dirty = true;
-	for (uint8_t i = 0; i < PLAYER_COUNT; i++)
-	{
-		players[i].start();
+	if(tile & TILE_WALL_MASK) {
+		//Walls are white;
+		return Colour(0xFFu, 0xFFu, 0xFFu);
 	}
-	initTileMap();
-	initPlayers();
-	draw_rect(PRIO_HIGH, 799, 0, 800, 599, Colour(0x60u, 0x60u, 0x60u));
+
+	if(tile & TILE_TAKEN_MASK) {
+		//Return taken tile colour
+		return TILE_COLOURS[tile & TILE_OWNER_MASK];
+	}
+
+	//black floor;
+	return Colour(0x00u, 0x00u, 0x00u);
+}
+
+void setDirty(uint8_t x, uint8_t y)
+{
+	if (x >= WIDTH_TILES)
+		return;
+	if (y >= HEIGHT_TILES)
+		return;
+	tile_map[x][y] |= TILE_DIRTY_MASK;
+}
+
+void drawTile(uint8_t x, uint8_t y)
+{
+	uint8_t tile = tile_map[x][y];
+	if (!(tile & TILE_DIRTY_MASK)) return;
+
+	const constexpr Vec2D scale = SCALING_FACTOR;
+
+	uint16_t startX = x*scale.x;
+	uint16_t startY = y*scale.y;
+	uint16_t endX = (x + 1)*scale.x - 1;
+	uint16_t endY = (y + 1)*scale.y - 1;
+	Colour colour = getTileColour(tile);
+
+	draw_rect(PRIO_HIGH, startX, startY, endX, endY, colour);
+
+	tile_map[x][y] &= ~TILE_DIRTY_MASK;
+
+}
+
+void initPlayers()
+{
+	for (uint8_t id = 0; id < PLAYER_COUNT; id++)
+	{
+		initPlayer(id);
+	}
+}
+
+
+void initPlayer(uint8_t playerID)
+{
+		Player &player = players[playerID];
+		player.position = PLAYER_STARTPOS[playerID];
+		tile_map[player.position.x][player.position.y] = TILE_TAKEN_MASK | TILE_DIRTY_MASK | playerID;
+		player.position.x <<= Player::position_multiplier_shift;
+		player.position.y <<= Player::position_multiplier_shift;
+}
+
+inline bool isFloor(uint8_t x, uint8_t y)
+{
+	if (x >= WIDTH_TILES)
+		return false;
+	if (y >= HEIGHT_TILES)
+		return false;
+	uint8_t tile = tile_map[x][y];
+	return !(tile & TILE_WALL_MASK);
 }
 
 void initTileMap()
@@ -52,7 +112,8 @@ void initTileMap()
 
 	initTileMapWalls();
 }
-void initTileMapWalls()
+
+inline void initTileMapWalls()
 {
 	uint8_t TILE_WALL = TILE_WALL_MASK | TILE_DIRTY_MASK;
 
@@ -69,57 +130,15 @@ void initTileMapWalls()
 	}
 }
 
-void initPlayers()
+void killPlayer(uint8_t playerID)
 {
-	for (uint8_t i = 0; i < PLAYER_COUNT; i++)
-	{
-		Player &p = players[i];
-		p.position = PLAYER_STARTPOS[i];
-		tile_map[p.position.x][p.position.y] = TILE_TAKEN_MASK | TILE_DIRTY_MASK | p.getID();
-		p.position.x <<= Player::position_multiplier_shift;
-		p.position.y <<= Player::position_multiplier_shift;
-	}
+	timeoutKilled[playerID] = 72*3;
+
 }
 
-void drawTile(uint8_t x, uint8_t y)
+void takeFloor(uint8_t playerID, uint8_t x, uint8_t y)
 {
-	uint8_t tile = tile_map[x][y];
-	if (!(tile & TILE_DIRTY_MASK)) return;
-	const constexpr Vec2D scale = SCALING_FACTOR;
-
-<<<<<<< HEAD
-	draw_rect(PRIO_HIGH, x * scaling.x, y * scaling.y, (x + 1) * scaling.x - 1, (y + 1) * scaling.y - 1,
-=======
-	draw_rect(PRIO_HIGH, x * scale.x, y * scale.y, (x + 1) * scale.x - 1, (y + 1) * scale.y - 1,
->>>>>>> 4a9fc7e (Prettify)
-	(tile & TILE_WALL_MASK) ? Colour(0xFFu, 0xFFu, 0xFFu) :
-	(tile & TILE_TAKEN_MASK ? TILE_COLOURS[tile & TILE_OWNER_MASK] :
-							  Colour(0x00u, 0x00u, 0x00u)));
-	tile_map[x][y] &= ~TILE_DIRTY_MASK;
-}
-
-bool inline isFloor(uint8_t x, uint8_t y)
-{
-	if (x >= WIDTH_TILES)
-		return false;
-	if (y >= HEIGHT_TILES)
-		return false;
-	uint8_t tile = tile_map[x][y];
-	return !(tile & TILE_WALL_MASK);
-}
-
-void setDirty(uint8_t x, uint8_t y)
-{
-	if (x >= WIDTH_TILES)
-		return;
-	if (y >= HEIGHT_TILES)
-		return;
-	tile_map[x][y] |= TILE_DIRTY_MASK;
-}
-
-void takeFloor(uint8_t player_id, uint8_t x, uint8_t y)
-{
-	if (player_id >= PLAYER_COUNT) return;
+	if (playerID >= PLAYER_COUNT) return;
 	if (!isFloor(x, y)) return;
 	uint8_t &tile = tile_map[x][y];
 
@@ -134,76 +153,47 @@ void takeFloor(uint8_t player_id, uint8_t x, uint8_t y)
 
 	// Write tile owner ID;
 	tile &= ~TILE_OWNER_MASK;
-	tile |= player_id & TILE_OWNER_MASK;
+	tile |= playerID & TILE_OWNER_MASK;
 
 	// Increase score of new owner
-	players[player_id].increaseScore();
+	players[playerID].increaseScore();
+}
+
+
+void start()
+{
+	Player::reset();
+	dirty = true;
+	for (uint8_t i = 0; i < PLAYER_COUNT; i++)
+	{
+		players[i].start();
+	}
+	initTileMap();
+	initPlayers();
+	draw_rect(PRIO_HIGH, 799, 0, 800, 599, Colour(0x60u, 0x60u, 0x60u));
 }
 
 void tick()
 {
-	for (uint8_t i = 0; i < PLAYER_COUNT; i++)
+	for (uint8_t playerID = 0; playerID < PLAYER_COUNT; playerID++)
 	{
-		Player &p = players[i];
-		volatile KB::PlayerKBData &data = KB::PLAYER_KB_DATA[i];
+		if (timeoutKilled[playerID] != 0)
+		{
+			if (--timeoutKilled[playerID] != 0)
+				continue;
+			initPlayer(playerID);
+			dirty = true;
+			continue;
+		}
+
+		Player &p = players[playerID];
+		volatile KB::PlayerKBData &data = KB::PLAYER_KB_DATA[playerID];
 		if (data.A)
 		{
-			Vec2D aim = p.getAim();
-			while (aim.x || aim.y)
-			{
-				takeFloor(p.getID(), (p.position.x >> Player::position_multiplier_shift) + aim.x,
-					  (p.position.y >> Player::position_multiplier_shift) + aim.y);
-				if (aim.x > 0x8000)
-					aim.x++;
-				else if (aim.x < 0x8000 && aim.x != 0)
-					aim.x--;
-				if (aim.y > 0x8000)
-					aim.y++;
-				else if (aim.y < 0x8000 && aim.y != 0)
-					aim.y--;
-			}
+			tickPlayerAttack(playerID);
 			dirty = true;
 		}
-		if (data.UP)
-		{
-			if (isFloor((p.position.x >> Player::position_multiplier_shift),
-							((p.position.y - 1) >> Player::position_multiplier_shift)))
-			{
-				p.position.y--;
-				p.facing = Player::UP;
-				dirty = true;
-			}
-		}
-		if (data.DOWN)
-		{
-			if (isFloor((p.position.x >> Player::position_multiplier_shift),
-							((p.position.y + 1) >> Player::position_multiplier_shift)))
-			{
-				p.position.y++;
-				p.facing = Player::DOWN;
-				dirty = true;
-			}
-		}
-		if (data.LEFT)
-		{
-			if (isFloor(((p.position.x - 1) >> Player::position_multiplier_shift),
-							(p.position.y >> Player::position_multiplier_shift)))
-			{
-				p.position.x--;
-				p.facing = Player::LEFT;
-				dirty = true;
-			}
-		}
-		if (data.RIGHT)
-		{
-			if (isFloor(((p.position.x + 1) >> Player::position_multiplier_shift),
-							(p.position.y >> Player::position_multiplier_shift)))
-			{
-				p.position.x++;
-				p.facing = Player::RIGHT;
-				dirty = true;
-			}
-		}
+		tickPlayerMovement(playerID);
 		if (dirty)
 		{
 			uint8_t x = (p.position.x >> Player::position_multiplier_shift);
@@ -212,6 +202,98 @@ void tick()
 				for (int j = -1; j < 2; j++)
 					setDirty(x + i, y + j);
 			takeFloor(p.getID(), x, y);
+		}
+	}
+}
+
+void tickPlayerAttack(uint8_t playerID)
+{
+	Player& p = players[playerID];
+	Vec2D aim = p.getAim();
+
+	uint8_t playerTileX = p.position.x >> Player::position_multiplier_shift;
+	uint8_t playerTileY = p.position.y >> Player::position_multiplier_shift;
+
+	while (aim.x || aim.y)
+	{
+		uint8_t absTileX = playerTileX + aim.x;
+		uint8_t absTileY = playerTileY + aim.y;
+
+		for(int targetID = 0; targetID < PLAYER_COUNT; targetID++)
+		{
+			Player& target = players[targetID];
+
+			if(targetID == playerID) continue;
+
+			uint8_t targetTileX = target.position.x >> Player::position_multiplier_shift;
+			uint8_t targetTileY = target.position.y >> Player::position_multiplier_shift;
+
+			if(targetTileX == absTileX && targetTileY == absTileY)
+			{
+				killPlayer(targetID);
+				uint8_t x = (target.position.x >> Player::position_multiplier_shift);
+				uint8_t y = (target.position.y >> Player::position_multiplier_shift);
+				for (int i = -1; i < 2; i++)
+					for (int j = -1; j < 2; j++)
+						setDirty(x + i, y + j);
+
+			}
+		}
+		takeFloor(p.getID(), (p.position.x >> Player::position_multiplier_shift) + aim.x,
+			  (p.position.y >> Player::position_multiplier_shift) + aim.y);
+		if (aim.x > 0x8000)
+			aim.x++;
+		else if (aim.x < 0x8000 && aim.x != 0)
+			aim.x--;
+		if (aim.y > 0x8000)
+			aim.y++;
+		else if (aim.y < 0x8000 && aim.y != 0)
+			aim.y--;
+	}
+}
+
+void tickPlayerMovement(uint8_t playerID)
+{
+	Player& p = players[playerID];
+	KB::PlayerKBData& data = KB::PLAYER_KB_DATA[playerID];
+	if (data.UP)
+	{
+		if (isFloor((p.position.x >> Player::position_multiplier_shift),
+						((p.position.y - 1) >> Player::position_multiplier_shift)))
+		{
+			p.position.y--;
+			p.facing = Player::UP;
+			dirty = true;
+		}
+	}
+	if (data.DOWN)
+	{
+		if (isFloor((p.position.x >> Player::position_multiplier_shift),
+						((p.position.y + 1) >> Player::position_multiplier_shift)))
+		{
+			p.position.y++;
+			p.facing = Player::DOWN;
+			dirty = true;
+		}
+	}
+	if (data.LEFT)
+	{
+		if (isFloor(((p.position.x - 1) >> Player::position_multiplier_shift),
+						(p.position.y >> Player::position_multiplier_shift)))
+		{
+			p.position.x--;
+			p.facing = Player::LEFT;
+			dirty = true;
+		}
+	}
+	if (data.RIGHT)
+	{
+		if (isFloor(((p.position.x + 1) >> Player::position_multiplier_shift),
+						(p.position.y >> Player::position_multiplier_shift)))
+		{
+			p.position.x++;
+			p.facing = Player::RIGHT;
+			dirty = true;
 		}
 	}
 }
@@ -231,6 +313,7 @@ void update()
 		Vec2D scale = SCALING_FACTOR;
 		for (uint8_t i = 0; i < PLAYER_COUNT; i++)
 		{
+			if (timeoutKilled[i] != 0) continue;
 			Player &p = players[i];
 			draw_rect(PRIO_LOW, ((p.position.x * scale.x) >> Player::position_multiplier_shift) - 8,
 					  ((p.position.y * scale.y) >> Player::position_multiplier_shift) - 8,

@@ -55,9 +55,6 @@ int main()
 
 	// after this test, start the actual game logic
 
-#ifdef NONES
-	if (Game::arena == nullptr) Game::arena = (Arena *)malloc(800 * 600 * 32);
-#endif
 	Arena::start();
 	Game::start();
 	while (!WindowShouldClose())

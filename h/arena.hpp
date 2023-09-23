@@ -14,28 +14,33 @@ namespace Arena
 	static constexpr const Vec2D SCALING_FACTOR = Vec2D { WIDTH/WIDTH_TILES, HEIGHT/HEIGHT_TILES };
 
 	extern uint8_t tile_map[WIDTH_TILES][HEIGHT_TILES];
-	extern Player players[2];
+	extern Player players[PLAYER_COUNT];
+	extern uint8_t timeoutKilled[PLAYER_COUNT];
 	extern bool dirty;
 
-	inline bool isFloor(uint8_t x, uint8_t y);
-	void tick();
-	void update();
+	inline Colour getTileColour(uint8_t tile);
+	void setDirty(uint8_t x, uint8_t y);
 
-	void takeFloor(
-		uint8_t player_id,
-		uint8_t x,
-		uint8_t y);
-	void setDirty(
-		uint8_t x,
-		uint8_t y);
+	void drawTile(uint8_t x, uint8_t y);
+
+	void initPlayers();
+	void initPlayer(uint8_t playerID);
+	inline bool isFloor(uint8_t x, uint8_t y);
+	void initTileMap();
+	inline void initTileMapWalls();
+
+	void killPlayer(uint8_t playerID);
+
+	void takeFloor(uint8_t playerID, uint8_t x, uint8_t y);
 
 	void start();
 
-	void initTileMap();
-	void initTileMapWalls();
-	void initPlayers();
+	void tick();
+	void tickPlayerAttack(uint8_t playerID);
+	void tickPlayerMovement(uint8_t playerID);
 
-	void drawTile(uint8_t x, uint8_t y);
+	void update();
+
 };
 
 #endif // !ARENA_HPP

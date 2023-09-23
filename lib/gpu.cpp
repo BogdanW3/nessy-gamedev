@@ -39,9 +39,9 @@ void draw_shape(volatile char *const where, const int x1, const int y1,
 								   const int x2, const int y2, const Colour &colour)
 {
 	if (where >= GPU_RENDER_LINE1 && where <= GPU_RENDER_LINE2)
-		DrawLine(x1, y1, x2, y2, {colour.r, colour.g, colour.b, 0xFF});
+		DrawLine(x1, y1, x2 + 1, y2 + 1, {colour.r, colour.g, colour.b, 0xFF});
 	else if (where >= GPU_RENDER_RECT1 && where <= GPU_RENDER_RECT2)
-		DrawRectangle(x1, y1, x2 - x1, y2 - y1, {colour.r, colour.g, colour.b, 0xFF});
+		DrawRectangle(x1, y1, x2 - x1 + 1, y2 - y1 + 1, {colour.r, colour.g, colour.b, 0xFF});
 }
 
 #else

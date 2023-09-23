@@ -30,7 +30,7 @@ namespace Game
 	{
 		if (!running) return;
 		Arena::update();
-		if (time >= 72 * 60)
+		if (time >= 72 * 30)
 		{
 			//stop();
 			//MainMenu::start();
