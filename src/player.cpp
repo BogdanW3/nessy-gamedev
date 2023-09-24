@@ -10,6 +10,16 @@ void Player::start()
 	facing = UP;
 }
 
+uint8_t Player::getTileX(signed char offset)
+{
+	return (position.x + offset) >> position_multiplier_shift;
+}
+
+uint8_t Player::getTileY(signed char offset)
+{
+	return (position.y + offset) >> position_multiplier_shift;
+}
+
 void Player::increaseScore()
 {
 	score++;

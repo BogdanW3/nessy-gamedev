@@ -254,45 +254,42 @@ void tickPlayerAttack(uint8_t playerID)
 
 void tickPlayerMovement(uint8_t playerID)
 {
-	Player& p = players[playerID];
-	KB::PlayerKBData& data = KB::PLAYER_KB_DATA[playerID];
+	Player& player = players[playerID];
+	volatile KB::PlayerKBData& data = KB::PLAYER_KB_DATA[playerID];
+
 	if (data.UP)
 	{
-		if (isFloor((p.position.x >> Player::position_multiplier_shift),
-						((p.position.y - 1) >> Player::position_multiplier_shift)))
+		if (isFloor(player.getTileX(), player.getTileY(-1)))
 		{
-			p.position.y--;
-			p.facing = Player::UP;
+			player.position.y--;
+			player.facing = Player::UP;
 			dirty = true;
 		}
 	}
 	if (data.DOWN)
 	{
-		if (isFloor((p.position.x >> Player::position_multiplier_shift),
-						((p.position.y + 1) >> Player::position_multiplier_shift)))
+		if (isFloor(player.getTileX(), player.getTileY(1)))
 		{
-			p.position.y++;
-			p.facing = Player::DOWN;
+			player.position.y++;
+			player.facing = Player::DOWN;
 			dirty = true;
 		}
 	}
 	if (data.LEFT)
 	{
-		if (isFloor(((p.position.x - 1) >> Player::position_multiplier_shift),
-						(p.position.y >> Player::position_multiplier_shift)))
+		if (isFloor(player.getTileX(-1), player.getTileY()))
 		{
-			p.position.x--;
-			p.facing = Player::LEFT;
+			player.position.x--;
+			player.facing = Player::LEFT;
 			dirty = true;
 		}
 	}
 	if (data.RIGHT)
 	{
-		if (isFloor(((p.position.x + 1) >> Player::position_multiplier_shift),
-						(p.position.y >> Player::position_multiplier_shift)))
+		if (isFloor(player.getTileX(1), player.getTileY()))
 		{
-			p.position.x++;
-			p.facing = Player::RIGHT;
+			player.position.x++;
+			player.facing = Player::RIGHT;
 			dirty = true;
 		}
 	}

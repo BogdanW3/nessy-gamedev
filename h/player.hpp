@@ -9,6 +9,9 @@ public:
 	void start();
 	void increaseScore();
 	void decreaseScore();
+
+	uint8_t getTileX(signed char offset = 0);
+	uint8_t getTileY(signed char offset = 0);
 	uint8_t getScore() const;
 	uint8_t getID() const;
 	static void reset();
