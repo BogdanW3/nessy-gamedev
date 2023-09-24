@@ -10,6 +10,7 @@
 
 struct Colour
 {
+	// Only the bottom 4 bits of each colour are used
 	constexpr Colour(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
 	uint8_t r;
 	uint8_t g;

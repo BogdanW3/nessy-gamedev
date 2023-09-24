@@ -170,7 +170,7 @@ void start()
 	}
 	initTileMap();
 	initPlayers();
-	draw_rect(PRIO_HIGH, 799, 0, 800, 599, Colour(0x60u, 0x60u, 0x60u));
+	draw_rect(PRIO_HIGH, 799, 0, 800, 599, Colour(0x0u, 0x0u, 0x0u));
 }
 
 void tick()
@@ -306,6 +306,11 @@ void update()
 				drawTile(i, j);
 			}
 		}
+		draw_line(0,0,40,40, Colour(0x0, 0x0u, 0x0u));
+		draw_line(760,560,800,600, Colour(0x0, 0x0u, 0x0u));
+		draw_line(760,40,800,0, Colour(0x0, 0x0u, 0x0u));
+		draw_line(40,560,0,600, Colour(0x0, 0x0u, 0x0u));
+
 		dirty = false;
 		Vec2D scale = SCALING_FACTOR;
 		for (uint8_t i = 0; i < PLAYER_COUNT; i++)

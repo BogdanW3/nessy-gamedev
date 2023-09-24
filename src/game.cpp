@@ -35,6 +35,7 @@ namespace Game
 			//stop();
 			//MainMenu::start();
 			Arena::start();
+			time = 0;
 		}
 	}
 }
