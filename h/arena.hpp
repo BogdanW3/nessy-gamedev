@@ -13,7 +13,7 @@ namespace Arena
 	static constexpr const uint8_t PLAYER_COUNT = 2;
 	static constexpr const Vec2D SCALING_FACTOR = Vec2D { WIDTH/WIDTH_TILES, HEIGHT/HEIGHT_TILES };
 
-	extern uint8_t tile_map[WIDTH_TILES][HEIGHT_TILES];
+	extern volatile uint8_t tile_map[WIDTH_TILES][HEIGHT_TILES];
 	extern Player players[PLAYER_COUNT];
 	extern uint8_t timeoutKilled[PLAYER_COUNT];
 	extern bool dirty;

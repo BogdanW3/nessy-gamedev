@@ -23,7 +23,7 @@ static constexpr const Vec2D PLAYER_STARTPOS[4] =
 	{18, 2}
 };
 
-uint8_t tile_map[WIDTH_TILES][HEIGHT_TILES];
+volatile uint8_t tile_map[WIDTH_TILES][HEIGHT_TILES];
 Player players[PLAYER_COUNT];
 uint8_t timeoutKilled[PLAYER_COUNT];
 bool dirty;
@@ -55,7 +55,7 @@ void setDirty(uint8_t x, uint8_t y)
 
 void drawTile(uint8_t x, uint8_t y)
 {
-	uint8_t &tile = tile_map[x][y];
+	volatile uint8_t &tile = tile_map[x][y];
 	if (!(tile & TILE_DIRTY_MASK)) return;
 
 	const constexpr Vec2D scale = SCALING_FACTOR;
@@ -139,7 +139,7 @@ void takeFloor(uint8_t playerID, uint8_t x, uint8_t y)
 {
 	if (playerID >= PLAYER_COUNT) return;
 	if (!isFloor(x, y)) return;
-	uint8_t &tile = tile_map[x][y];
+	volatile uint8_t &tile = tile_map[x][y];
 
 	// Decrease score of last owner (if they exists)
 	if (tile & TILE_TAKEN_MASK)
@@ -169,7 +169,7 @@ void start()
 	}
 	initTileMap();
 	initPlayers();
-	//draw_rect(PRIO_HIGH, 799, 0, 800, 599, Colour(0x0, 0x0, 0x0));
+	draw_rect(PRIO_HIGH, 799, 0, 800, 599, Colour(0x0, 0x0, 0x0));
 }
 
 void tick()
