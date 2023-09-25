@@ -29,7 +29,9 @@ namespace Game
 	void update()
 	{
 		if (!running) return;
-		if (time >= 72 * 30)
+		if (/*time >= 72 * 30 ||*/
+			Arena::players[0].getScore() >= 100 ||
+			Arena::players[1].getScore() >= 100)
 		{
 			//stop();
 			//MainMenu::start();

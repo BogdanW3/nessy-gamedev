@@ -138,6 +138,8 @@ void killPlayer(uint8_t playerID)
 void takeFloor(uint8_t playerID, uint8_t x, uint8_t y)
 {
 	if (playerID >= PLAYER_COUNT) return;
+	if (x >= WIDTH_TILES || y >= HEIGHT_TILES)
+		return;
 	if (!isFloor(x, y)) return;
 	volatile uint8_t &tile = tile_map[x][y];
 
@@ -147,12 +149,13 @@ void takeFloor(uint8_t playerID, uint8_t x, uint8_t y)
 		players[tile & TILE_OWNER_MASK].decreaseScore();
 	}
 
-	// Set taken bit;
-	tile |= TILE_TAKEN_MASK | TILE_DIRTY_MASK;
 
 	// Write tile owner ID;
 	tile &= ~TILE_OWNER_MASK;
 	tile |= playerID & TILE_OWNER_MASK;
+
+	// Set taken bit;
+	tile |= TILE_TAKEN_MASK | TILE_DIRTY_MASK;
 
 	// Increase score of new owner
 	players[playerID].increaseScore();
