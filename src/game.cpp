@@ -29,7 +29,6 @@ namespace Game
 	void update()
 	{
 		if (!running) return;
-		Arena::update();
 		if (time >= 72 * 30)
 		{
 			//stop();
@@ -37,5 +36,6 @@ namespace Game
 			Arena::start();
 			time = 0;
 		}
+		Arena::update();
 	}
 }
