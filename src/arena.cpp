@@ -102,18 +102,17 @@ inline bool isFloor(uint8_t x, uint8_t y)
 
 void initTileMap()
 {
-	initTileMapWalls();
-
 	for (uint8_t i = 0; i < WIDTH_TILES; i++)
 	{
 		for (uint8_t j = 0; j < HEIGHT_TILES; j++)
 		{
-			tile_map[i][j] = TILE_DIRTY_MASK;
+			tile_map[i][j] &= TILE_WALL_MASK;
+			tile_map[i][j] |= TILE_DIRTY_MASK;
 		}
 	}
 }
 
-inline void initTileMapWalls()
+void initTileMapWalls()
 {
 	uint8_t TILE_WALL = TILE_WALL_MASK | TILE_DIRTY_MASK;
 

@@ -55,6 +55,7 @@ int main()
 
 	// after this test, start the actual game logic
 
+	Arena::initTileMapWalls();
 	Arena::start();
 	Game::start();
 	while (!WindowShouldClose())

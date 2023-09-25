@@ -27,7 +27,7 @@ namespace Arena
 	void initPlayer(uint8_t playerID);
 	inline bool isFloor(uint8_t x, uint8_t y);
 	void initTileMap();
-	inline void initTileMapWalls();
+	void initTileMapWalls();
 
 	void killPlayer(uint8_t playerID);
 
