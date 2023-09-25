@@ -8,10 +8,10 @@ namespace Arena {
 
 static constexpr const Colour PLAYER_COLOURS[4] =
 {
-	{0xFFu, 0x00u, 0x00u},
-	{0x00u, 0x00u, 0xFFu},
-	{0x00u, 0xFFu, 0x00u},
-	{0xFFu, 0xFFu, 0x00u}
+	{0xF, 0x0, 0x0},
+	{0x0, 0x0, 0xF},
+	{0x0, 0xF, 0x0},
+	{0xF, 0xF, 0x0}
 };
 
 
@@ -32,7 +32,7 @@ inline Colour getTileColour(uint8_t tile)
 {
 	if(tile & TILE_WALL_MASK) {
 		//Walls are white;
-		return Colour(0xFFu, 0xFFu, 0xFFu);
+		return Colour(0xF, 0xF, 0xF);
 	}
 
 	if(tile & TILE_TAKEN_MASK) {
@@ -41,7 +41,7 @@ inline Colour getTileColour(uint8_t tile)
 	}
 
 	//black floor;
-	return Colour(0x00u, 0x00u, 0x00u);
+	return Colour(0x0, 0x0, 0x0);
 }
 
 void setDirty(uint8_t x, uint8_t y)
@@ -55,7 +55,7 @@ void setDirty(uint8_t x, uint8_t y)
 
 void drawTile(uint8_t x, uint8_t y)
 {
-	uint8_t tile = tile_map[x][y];
+	uint8_t &tile = tile_map[x][y];
 	if (!(tile & TILE_DIRTY_MASK)) return;
 
 	const constexpr Vec2D scale = SCALING_FACTOR;
@@ -68,7 +68,7 @@ void drawTile(uint8_t x, uint8_t y)
 
 	draw_rect(PRIO_HIGH, startX, startY, endX, endY, colour);
 
-	tile_map[x][y] &= ~TILE_DIRTY_MASK;
+	tile &= ~TILE_DIRTY_MASK;
 
 }
 
@@ -170,7 +170,7 @@ void start()
 	}
 	initTileMap();
 	initPlayers();
-	draw_rect(PRIO_HIGH, 799, 0, 800, 599, Colour(0x0u, 0x0u, 0x0u));
+	//draw_rect(PRIO_HIGH, 799, 0, 800, 599, Colour(0x0, 0x0, 0x0));
 }
 
 void tick()
@@ -186,7 +186,7 @@ void tick()
 			continue;
 		}
 
-		Player &p = players[playerID];
+		Player &player = players[playerID];
 		volatile KB::PlayerKBData &data = KB::PLAYER_KB_DATA[playerID];
 		if (data.A)
 		{
@@ -196,23 +196,23 @@ void tick()
 		tickPlayerMovement(playerID);
 		if (dirty)
 		{
-			uint8_t x = (p.position.x >> Player::position_multiplier_shift);
-			uint8_t y = (p.position.y >> Player::position_multiplier_shift);
+			uint8_t x = (player.position.x >> Player::position_multiplier_shift);
+			uint8_t y = (player.position.y >> Player::position_multiplier_shift);
 			for (int i = -1; i < 2; i++)
 				for (int j = -1; j < 2; j++)
 					setDirty(x + i, y + j);
-			takeFloor(p.getID(), x, y);
+			takeFloor(player.getID(), x, y);
 		}
 	}
 }
 
 void tickPlayerAttack(uint8_t playerID)
 {
-	Player& p = players[playerID];
-	Vec2D aim = p.getAim();
+	Player& player = players[playerID];
+	Vec2D aim = player.getAim();
 
-	uint8_t playerTileX = p.position.x >> Player::position_multiplier_shift;
-	uint8_t playerTileY = p.position.y >> Player::position_multiplier_shift;
+	uint8_t playerTileX = player.getTileX();
+	uint8_t playerTileY = player.getTileY();
 
 	while (aim.x || aim.y)
 	{
@@ -225,22 +225,20 @@ void tickPlayerAttack(uint8_t playerID)
 
 			if(targetID == playerID) continue;
 
-			uint8_t targetTileX = target.position.x >> Player::position_multiplier_shift;
-			uint8_t targetTileY = target.position.y >> Player::position_multiplier_shift;
+			uint8_t targetTileX = target.getTileX();
+			uint8_t targetTileY = target.getTileY();
 
 			if(targetTileX == absTileX && targetTileY == absTileY)
 			{
 				killPlayer(targetID);
-				uint8_t x = (target.position.x >> Player::position_multiplier_shift);
-				uint8_t y = (target.position.y >> Player::position_multiplier_shift);
 				for (int i = -1; i < 2; i++)
 					for (int j = -1; j < 2; j++)
-						setDirty(x + i, y + j);
+						setDirty(targetTileX + i, targetTileY + j);
 
 			}
 		}
-		takeFloor(p.getID(), (p.position.x >> Player::position_multiplier_shift) + aim.x,
-			  (p.position.y >> Player::position_multiplier_shift) + aim.y);
+		takeFloor(player.getID(), playerTileX + aim.x,
+			  playerTileY + aim.y);
 		if (aim.x > 0x8000)
 			aim.x++;
 		else if (aim.x < 0x8000 && aim.x != 0)
@@ -316,12 +314,12 @@ void update()
 		for (uint8_t i = 0; i < PLAYER_COUNT; i++)
 		{
 			if (timeoutKilled[i] != 0) continue;
-			Player &p = players[i];
-			draw_rect(PRIO_LOW, ((p.position.x * scale.x) >> Player::position_multiplier_shift) - 8,
-					  ((p.position.y * scale.y) >> Player::position_multiplier_shift) - 8,
-					  ((p.position.x * scale.x) >> Player::position_multiplier_shift) + 6,
-					  ((p.position.y * scale.y) >> Player::position_multiplier_shift) + 6,
-					  PLAYER_COLOURS[p.getID()]);
+			Player &player = players[i];
+			draw_rect(PRIO_LOW, ((player.position.x * scale.x) >> Player::position_multiplier_shift) - 8,
+					  ((player.position.y * scale.y) >> Player::position_multiplier_shift) - 8,
+					  ((player.position.x * scale.x) >> Player::position_multiplier_shift) + 6,
+					  ((player.position.y * scale.y) >> Player::position_multiplier_shift) + 6,
+					  PLAYER_COLOURS[i]);
 		}
 	}
 }
