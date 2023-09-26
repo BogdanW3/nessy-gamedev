@@ -86,6 +86,8 @@ void initPlayer(uint8_t playerID)
 		Player &player = players[playerID];
 		player.position = PLAYER_STARTPOS[playerID];
 		tile_map[player.position.x][player.position.y] = TILE_TAKEN_MASK | TILE_DIRTY_MASK | playerID;
+		player.resetScore();
+		player.increaseScore();
 		player.position.x <<= Player::position_multiplier_shift;
 		player.position.y <<= Player::position_multiplier_shift;
 }
@@ -325,15 +327,4 @@ void update()
 		}
 	}
 }
-/*
-~Arena()
-{
-	for(uint8_t i = 0; i < WIDTH_TILES; i++)
-	{
-		delete[] tile_map[i];
-	}
-	delete[] tile_map;
-
-	delete[] players;
-}*/
 }

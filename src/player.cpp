@@ -30,6 +30,11 @@ void Player::decreaseScore()
 	score--;
 }
 
+void Player::resetScore()
+{
+	score = 0;
+}
+
 uint8_t Player::getScore() const
 {
 	return score;

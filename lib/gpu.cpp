@@ -48,7 +48,7 @@ void draw_shape(volatile char *const where, const int x1, const int y1,
 
 void draw_pixel(volatile char *const where, const int x, const int y, const Colour &colour)
 {
-	while (!(*GPU_STATUS & (1 << (where - GPU_STATUS))))
+	while (!(*GPU_STATUS & (1 << (((uint16_t)where) % 8))))
 		;
 	*where = colour.r;
 	*where = colour.g;
@@ -62,7 +62,7 @@ void draw_pixel(volatile char *const where, const int x, const int y, const Colo
 void draw_shape(volatile char *const where, const int x1, const int y1,
 								   const int x2, const int y2, const Colour &colour)
 {
-	while (!(*GPU_STATUS & (1 << (where - GPU_STATUS))))
+	while (!(*GPU_STATUS & (1 << (((uint16_t)where) % 8))))
 		;
 	*where = colour.r;
 	*where = colour.g;
@@ -81,11 +81,11 @@ void draw_shape(volatile char *const where, const int x1, const int y1,
 
 void draw_pixel(const int x, const int y, const Colour &colour)
 {
-	while (!(*GPU_STATUS & (1 << (GPU_RENDER_PIXEL1 - GPU_STATUS))) &&
-		   !(*GPU_STATUS & (1 << (GPU_RENDER_PIXEL2 - GPU_STATUS))))
+	while (!(*GPU_STATUS & (1 << (((uint16_t)GPU_RENDER_PIXEL1) % 8))) &&
+		   !(*GPU_STATUS & (1 << (((uint16_t)GPU_RENDER_PIXEL2) % 8))))
 		;
 
-	if (*GPU_STATUS & (1 << (GPU_RENDER_PIXEL2 - GPU_STATUS)))
+	if (*GPU_STATUS & (1 << (((uint16_t)GPU_RENDER_PIXEL1) % 8)))
 		draw_pixel(GPU_RENDER_PIXEL2, x, y, colour);
 	else
 		draw_pixel(GPU_RENDER_PIXEL1, x, y, colour);
@@ -93,11 +93,11 @@ void draw_pixel(const int x, const int y, const Colour &colour)
 
 void draw_line(const int x1, const int y1, const int x2, const int y2, const Colour &colour)
 {
-	while (!(*GPU_STATUS & (1 << (GPU_RENDER_LINE1 - GPU_STATUS))) &&
-		   !(*GPU_STATUS & (1 << (GPU_RENDER_LINE2 - GPU_STATUS))))
+	while (!(*GPU_STATUS & (1 << (((uint16_t)GPU_RENDER_LINE1) % 8))) &&
+		   !(*GPU_STATUS & (1 << (((uint16_t)GPU_RENDER_LINE2) % 8))))
 		;
 
-	if (*GPU_STATUS & (1 << (GPU_RENDER_LINE2 - GPU_STATUS)))
+	if (*GPU_STATUS & (1 << (((uint16_t)GPU_RENDER_LINE2) % 8)))
 		draw_shape(GPU_RENDER_LINE2, x1, y1, x2, y2, colour);
 	else
 		draw_shape(GPU_RENDER_LINE1, x1, y1, x2, y2, colour);
@@ -105,11 +105,11 @@ void draw_line(const int x1, const int y1, const int x2, const int y2, const Col
 
 void draw_rect(const int x1, const int y1, const int x2, const int y2, const Colour &colour)
 {
-	while (!(*GPU_STATUS & (1 << (GPU_RENDER_RECT1 - GPU_STATUS))) &&
-		   !(*GPU_STATUS & (1 << (GPU_RENDER_RECT2 - GPU_STATUS))))
+	while (!(*GPU_STATUS & (1 << (((uint16_t)GPU_RENDER_RECT1) % 8))) &&
+		   !(*GPU_STATUS & (1 << (((uint16_t)GPU_RENDER_RECT2) % 8))))
 		;
 
-	if (*GPU_STATUS & (1 << (GPU_RENDER_RECT2 - GPU_STATUS)))
+	if (*GPU_STATUS & (1 << (((uint16_t)GPU_RENDER_RECT2) % 8)))
 		draw_shape(GPU_RENDER_RECT2, x1, y1, x2, y2, colour);
 	else
 		draw_shape(GPU_RENDER_RECT1, x1, y1, x2, y2, colour);
